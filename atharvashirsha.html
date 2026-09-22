@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="sa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atharvashirsha · Recitation walkthrough</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Mukta:wght@300;400;500&display=swap">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#16121F;
+  --bg-2:#1F1A2B;
+  --ink:#EFE3C6;
+  --ink-dim:#5E5670;
+  --ink-done:#A99E86;
+  --kesari:#F28C28;
+  --gold:#D9A441;
+  --line:#2C2538;
+  --sanskrit:"Tiro Devanagari Sanskrit","Noto Serif Devanagari","Mangal",serif;
+  --ui:"Mukta","Noto Sans Devanagari",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#F6EBD6;--bg-2:#EEDFC3;--ink:#2A1F1A;--ink-dim:#B9AA90;--ink-done:#6F624F;
+    --kesari:#C8590E;--gold:#8E6A1B;--line:#DCCBAA;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F6EBD6;--bg-2:#EEDFC3;--ink:#2A1F1A;--ink-dim:#B9AA90;--ink-done:#6F624F;
+  --kesari:#C8590E;--gold:#8E6A1B;--line:#DCCBAA;
+}
+:root[data-theme="dark"]{
+  --bg:#16121F;--bg-2:#1F1A2B;--ink:#EFE3C6;--ink-dim:#5E5670;--ink-done:#A99E86;
+  --kesari:#F28C28;--gold:#D9A441;--line:#2C2538;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--ui);display:flex;flex-direction:column;overflow:hidden}
+*{box-sizing:inherit}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px;gap:12px}
+.verse-no{font-family:var(--sanskrit);font-size:1.4rem;color:var(--gold);line-height:1}
+.progress{display:flex;gap:5px;flex:1;justify-content:center}
+.progress i{width:6px;height:6px;border-radius:50%;background:var(--ink-dim);opacity:.5}
+.progress i.done{background:var(--gold);opacity:.8}
+.progress i.now{background:var(--kesari);opacity:1;transform:scale(1.4)}
+.icon-btn{background:none;border:1px solid var(--line);color:var(--ink);width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer}
+.icon-btn:focus-visible,button:focus-visible{outline:2px solid var(--kesari);outline-offset:2px}
+
+main{flex:1;overflow-y:auto;padding:12px 22px 40px;-webkit-overflow-scrolling:touch}
+.text{font-family:var(--sanskrit);font-size:clamp(1.55rem,6.2vw,2.4rem);line-height:1.9;text-align:center;max-width:36ch;margin:0 auto}
+.w{display:inline-block;padding:0 .12em;border-radius:.3em;color:var(--ink-dim);cursor:pointer;transition:color .18s,background .18s,transform .18s,box-shadow .18s;position:relative}
+.w.done{color:var(--ink-done)}
+.w.now{color:var(--kesari)}
+.danda{color:var(--ink-dim);margin:0 .15em}
+body[data-script="rom"] .text{font-size:clamp(1.25rem,5vw,1.9rem);letter-spacing:.01em}
+body[data-script="both"] .text{line-height:1.25}
+body[data-script="both"] .w{vertical-align:top;margin:.35em 0}
+body[data-script="both"] .w b{display:block;font-weight:inherit}
+body[data-script="both"] .w small{display:block;font-size:.5em;line-height:1.3;opacity:.75;font-family:var(--sanskrit)}
+body[data-script="both"] .danda{vertical-align:top;margin-top:.1em;display:inline-block}
+
+/* Style A: kesari glow + lift */
+body[data-style="glow"] .w.now{font-weight:700;transform:translateY(-.06em) scale(1.08);text-shadow:0 0 18px color-mix(in srgb,var(--kesari) 55%,transparent)}
+/* Style B: gold underline bar */
+body[data-style="bar"] .w.now{color:var(--ink);font-weight:700}
+body[data-style="bar"] .w.now::after{content:"";position:absolute;left:.1em;right:.1em;bottom:.05em;height:.14em;background:var(--kesari);border-radius:2px}
+/* Style C: filled pill */
+body[data-style="pill"] .w.now{color:var(--bg);background:var(--kesari);font-weight:600}
+
+.prev-next{opacity:.45;font-size:.8rem;text-align:center;margin-top:28px;color:var(--ink-done);font-family:var(--ui)}
+.ctx{font-family:var(--sanskrit);font-size:clamp(1.05rem,4vw,1.5rem);line-height:1.8;text-align:center;max-width:36ch;margin:0 auto;color:var(--ink-dim);opacity:.55;cursor:pointer}
+.ctx .n{display:block;font-size:.85em;color:var(--gold);opacity:.8;margin-bottom:4px}
+.ctx.prev{margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.ctx.next{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.ctx.hidden{display:none}
+.verse{padding:18px 0;border-bottom:1px solid var(--line)}
+.verse:last-child{border-bottom:0}
+.verse .n{display:block;text-align:center;font-family:var(--sanskrit);color:var(--gold);opacity:.8;margin-bottom:6px}
+.verse .ctx{margin:0}
+.verse.cur .n{opacity:1}
+.ctrl.mic{position:relative}
+.ctrl.mic.on{border-color:var(--kesari);color:var(--kesari)}
+.ctrl.mic.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--kesari);animation:pulse 1.4s ease-out infinite}
+@keyframes pulse{from{transform:scale(.9);opacity:.9}to{transform:scale(1.35);opacity:0}}
+.heard{font-family:var(--sanskrit);font-size:.95rem;color:var(--ink-done);text-align:center;min-height:1.4em;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl}
+.heard span{direction:ltr;unicode-bidi:embed}
+.heard.err{color:var(--kesari);font-family:var(--ui)}
+@media (prefers-reduced-motion: reduce){.ctrl.mic.on::after{animation:none}}
+
+footer{border-top:1px solid var(--line);background:var(--bg-2);padding:10px 18px 12px}
+.controls{display:flex;align-items:center;justify-content:center;gap:12px}
+.ctrl{background:none;border:1px solid var(--line);color:var(--ink);border-radius:50%;width:48px;height:48px;font-size:1.1rem;cursor:pointer}
+#resetBtn{width:40px;height:40px;font-size:1.05rem;color:var(--ink-done)}
+.ctrl.play{width:64px;height:64px;background:var(--kesari);border-color:var(--kesari);color:#16121F;font-size:1.4rem}
+.row{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:.85rem;color:var(--ink-done)}
+.row label{white-space:nowrap}
+.row input[type=range]{flex:1;accent-color:var(--kesari)}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;font-size:.8rem}
+.seg button{background:none;border:0;color:var(--ink-done);padding:6px 12px;cursor:pointer;font-family:var(--ui)}
+.seg button[aria-pressed="true"]{background:var(--line);color:var(--ink)}
+.opts{display:flex;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
+@media (prefers-reduced-motion: reduce){.w{transition:none}body[data-style="glow"] .w.now{transform:none}}
+
+/* ---------- TV / projector mode ---------- */
+body[data-tv="1"]{cursor:none}
+body[data-tv="1"] header{padding:2vh 4vw 1vh}
+body[data-tv="1"] .verse-no{font-size:3.2vh}
+body[data-tv="1"] .progress i{width:1.1vh;height:1.1vh}
+body[data-tv="1"] main{padding:2vh 6vw 30vh}
+body[data-tv="1"] .text{font-size:clamp(2.6rem,7.2vh,6rem);line-height:1.75;max-width:88vw}
+body[data-tv="1"][data-script="rom"] .text{font-size:clamp(2.2rem,6vh,5rem)}
+body[data-tv="1"][data-script="both"] .text{line-height:1.2}
+body[data-tv="1"] .ctx{font-size:clamp(1.3rem,3.4vh,2.6rem);max-width:80vw;opacity:.42}
+body[data-tv="1"] .verse{padding:3vh 0}
+body[data-tv="1"] .w{padding:0 .1em}
+body[data-tv="1"][data-style="glow"] .w.now{text-shadow:0 0 .35em color-mix(in srgb,var(--kesari) 65%,transparent),0 0 1em color-mix(in srgb,var(--kesari) 30%,transparent)}
+body[data-tv="1"] .w.done{color:color-mix(in srgb,var(--ink) 70%,var(--ink-done))}
+body[data-tv="1"] .w{color:color-mix(in srgb,var(--ink-dim) 75%,var(--ink))}
+body[data-tv="1"] .prev-next{display:none}
+/* controls collapse to a thin strip; slide up on hover / touch / any key */
+body[data-tv="1"] footer{position:fixed;left:0;right:0;bottom:0;transform:translateY(calc(100% - 6px));transition:transform .25s;opacity:.95}
+body[data-tv="1"] footer::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:var(--line)}
+body[data-tv="1"].show-ui footer{transform:none}
+body[data-tv="1"].show-ui{cursor:default}
+body[data-tv="1"] .ctrl{width:8vh;height:8vh;font-size:3vh}
+body[data-tv="1"] .ctrl.play{width:10vh;height:10vh;font-size:4vh}
+body[data-tv="1"] .heard{font-size:2.6vh}
+body[data-tv="1"] .seg,body[data-tv="1"] .row{font-size:1.9vh}
+.kbd{opacity:.5;font-size:.75rem;text-align:center;margin-top:8px;font-family:var(--ui);display:none}
+body[data-tv="1"] .kbd{display:block}
+</style>
+</head>
+<body data-style="glow" data-script="dev">
+<header>
+  <div class="verse-no" id="verseNo">॥ १ ॥</div>
+  <div class="progress" id="progress"></div>
+  <button class="icon-btn" id="tvBtn" title="TV / projector mode" aria-label="TV mode">⛶</button>
+  <button class="icon-btn" id="themeBtn" title="Day / night" aria-label="Toggle day or night">☾</button>
+</header>
+
+<main id="main">
+  <div id="all"></div>
+  <div class="prev-next" id="hint">Scroll freely · tap any word to jump there</div>
+</main>
+
+<footer>
+  <div class="controls">
+    <button class="ctrl" id="resetBtn" aria-label="Back to start" title="Back to start">↺</button>
+    <button class="ctrl" id="prevBtn" aria-label="Previous">‹</button>
+    <button class="ctrl play" id="playBtn" aria-label="Play">▶</button>
+    <button class="ctrl" id="nextBtn" aria-label="Next">›</button>
+    <button class="ctrl mic" id="micBtn" aria-label="Listen and follow">🎙</button>
+  </div>
+  <div class="heard" id="heard"></div>
+  <div class="kbd">Space play/pause · ← → step · R restart · M mic · F fullscreen · Esc exit TV</div>
+  <div class="row">
+    <label for="pace">Speed</label>
+    <input type="range" id="pace" min="0.5" max="5" step="0.25" value="1">
+    <span id="paceVal">1×</span>
+  </div>
+  <div class="opts">
+    <div class="seg" id="styleSeg" role="group" aria-label="Highlight style">
+      <button data-v="glow" aria-pressed="true">Glow</button>
+      <button data-v="bar" aria-pressed="false">Underline</button>
+      <button data-v="pill" aria-pressed="false">Pill</button>
+    </div>
+    <div class="seg" id="scriptSeg" role="group" aria-label="Script">
+      <button data-v="dev" aria-pressed="true">देवनागरी</button>
+      <button data-v="rom" aria-pressed="false">Roman</button>
+      <button data-v="both" aria-pressed="false">Both</button>
+    </div>
+    <div class="seg" id="langSeg" role="group" aria-label="Recognition language">
+      <button data-v="hi-IN" aria-pressed="true">Hindi model</button>
+      <button data-v="mr-IN" aria-pressed="false">Marathi model</button>
+    </div>
+    <div class="seg" id="calibSeg" role="group" aria-label="Calibration">
+      <button data-v="on" aria-pressed="false">Calibrate</button>
+      <button data-v="clear" aria-pressed="false">Reset timing</button>
+    </div>
+    <div class="seg" id="unitSeg" role="group" aria-label="Step by">
+      <button data-v="word" aria-pressed="true">Word</button>
+      <button data-v="phrase" aria-pressed="false">Phrase</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+const VERSES = [
+"ॐ नमस्ते गणपतये । त्वमेव प्रत्यक्षं तत्त्वमसि । त्वमेव केवलं कर्तासि । त्वमेव केवलं धर्तासि । त्वमेव केवलं हर्तासि । त्वमेव सर्वं खल्विदं ब्रह्मासि । त्वं साक्षादात्मासि नित्यम् ॥",
+"ऋतं वच्मि । सत्यं वच्मि ॥",
+"अव त्वं माम् । अव वक्तारम् । अव श्रोतारम् । अव दातारम् । अव धातारम् । अवानूचानमव शिष्यम् । अव पश्चात्तात् । अव पुरस्तात् । अवोत्तरात्तात् । अव दक्षिणात्तात् । अव चोर्ध्वात्तात् । अवाधरात्तात् । सर्वतो मां पाहि पाहि समन्तात् ॥",
+"त्वं वाङ्मयस्त्वं चिन्मयः । त्वमानन्दमयस्त्वं ब्रह्ममयः । त्वं सच्चिदानन्दाद्वितीयोऽसि । त्वं प्रत्यक्षं ब्रह्मासि । त्वं ज्ञानमयो विज्ञानमयोऽसि ॥",
+"सर्वं जगदिदं त्वत्तो जायते । सर्वं जगदिदं त्वत्तस्तिष्ठति । सर्वं जगदिदं त्वयि लयमेष्यति । सर्वं जगदिदं त्वयि प्रत्येति । त्वं भूमिरापोऽनलोऽनिलो नभः । त्वं चत्वारि वाक्पदानि ॥",
+"त्वं गुणत्रयातीतः । त्वं अवस्थात्रयातीतः । त्वं देहत्रयातीतः । त्वं कालत्रयातीतः । त्वं मूलाधारस्थितोऽसि नित्यम् । त्वं शक्तित्रयात्मकः । त्वां योगिनो ध्यायन्ति नित्यम् । त्वं ब्रह्मा त्वं विष्णुस्त्वं रुद्रस्त्वमिन्द्रस्त्वमग्निस्त्वं वायुस्त्वं सूर्यस्त्वं चन्द्रमास्त्वं ब्रह्म भूर्भुवः स्वरोम् ॥",
+"गणादिं पूर्वमुच्चार्य वर्णादींस्तदनन्तरम् । अनुस्वारः परतरः । अर्धेन्दुलसितम् । तारेण ऋद्धम् । एतत्तव मनुस्वरूपम् । गकारः पूर्वरूपम् । अकारो मध्यमरूपम् । अनुस्वारश्चान्त्यरूपम् । बिन्दुरुत्तररूपम् । नादः सन्धानम् । संहिता सन्धिः । सैषा गणेशविद्या । गणक ऋषिः । निचृद्गायत्री छन्दः । गणपतिर्देवता । ॐ गं गणपतये नमः ॥",
+"एकदन्ताय विद्महे वक्रतुण्डाय धीमहि । तन्नो दन्तिः प्रचोदयात् ॥",
+"एकदन्तं चतुर्हस्तं पाशमङ्कुशधारिणम् । रदं च वरदं हस्तैर्बिभ्राणं मूषकध्वजम् । रक्तं लम्बोदरं शूर्पकर्णकं रक्तवाससम् । रक्तगन्धानुलिप्ताङ्गं रक्तपुष्पैः सुपूजितम् । भक्तानुकम्पिनं देवं जगत्कारणमच्युतम् । आविर्भूतं च सृष्ट्यादौ प्रकृतेः पुरुषात्परम् । एवं ध्यायति यो नित्यं स योगी योगिनां वरः ॥",
+"नमो व्रातपतये नमो गणपतये नमः प्रमथपतये नमस्ते अस्तु लम्बोदराय एकदन्ताय विघ्ननाशिने शिवसुताय श्रीवरदमूर्तये नमः ॥"
+];
+const ROMAN = [
+"oṁ namaste gaṇapataye । tvameva pratyakṣaṁ tattvamasi । tvameva kevalaṁ kartāsi । tvameva kevalaṁ dhartāsi । tvameva kevalaṁ hartāsi । tvameva sarvaṁ khalvidaṁ brahmāsi । tvaṁ sākṣādātmāsi nityam ॥",
+"ṛtaṁ vacmi । satyaṁ vacmi ॥",
+"ava tvaṁ mām । ava vaktāram । ava śrotāram । ava dātāram । ava dhātāram । avānūcānamava śiṣyam । ava paścāttāt । ava purastāt । avottarāttāt । ava dakṣiṇāttāt । ava cordhvāttāt । avādharāttāt । sarvato māṁ pāhi pāhi samantāt ॥",
+"tvaṁ vāṅmayastvaṁ cinmayaḥ । tvamānandamayastvaṁ brahmamayaḥ । tvaṁ saccidānandādvitīyo'si । tvaṁ pratyakṣaṁ brahmāsi । tvaṁ jñānamayo vijñānamayo'si ॥",
+"sarvaṁ jagadidaṁ tvatto jāyate । sarvaṁ jagadidaṁ tvattastiṣṭhati । sarvaṁ jagadidaṁ tvayi layameṣyati । sarvaṁ jagadidaṁ tvayi pratyeti । tvaṁ bhūmirāpo'nalo'nilo nabhaḥ । tvaṁ catvāri vākpadāni ॥",
+"tvaṁ guṇatrayātītaḥ । tvaṁ avasthātrayātītaḥ । tvaṁ dehatrayātītaḥ । tvaṁ kālatrayātītaḥ । tvaṁ mūlādhārasthito'si nityam । tvaṁ śaktitrayātmakaḥ । tvāṁ yogino dhyāyanti nityam । tvaṁ brahmā tvaṁ viṣṇustvaṁ rudrastvamindrastvamagnistvaṁ vāyustvaṁ sūryastvaṁ candramāstvaṁ brahma bhūrbhuvaḥ svarom ॥",
+"gaṇādiṁ pūrvamuccārya varṇādīṁstadanantaram । anusvāraḥ parataraḥ । ardhendulasitam । tāreṇa ṛddham । etattava manusvarūpam । gakāraḥ pūrvarūpam । akāro madhyamarūpam । anusvāraścāntyarūpam । binduruttararūpam । nādaḥ sandhānam । saṁhitā sandhiḥ । saiṣā gaṇeśavidyā । gaṇaka ṛṣiḥ । nicṛdgāyatrī chandaḥ । gaṇapatirdevatā । oṁ gaṁ gaṇapataye namaḥ ॥",
+"ekadantāya vidmahe vakratuṇḍāya dhīmahi । tanno dantiḥ pracodayāt ॥",
+"ekadantaṁ caturhastaṁ pāśamaṅkuśadhāriṇam । radaṁ ca varadaṁ hastairbibhrāṇaṁ mūṣakadhvajam । raktaṁ lambodaraṁ śūrpakarṇakaṁ raktavāsasam । raktagandhānuliptāṅgaṁ raktapuṣpaiḥ supūjitam । bhaktānukampinaṁ devaṁ jagatkāraṇamacyutam । āvirbhūtaṁ ca sṛṣṭyādau prakṛteḥ puruṣātparam । evaṁ dhyāyati yo nityaṁ sa yogī yogināṁ varaḥ ॥",
+"namo vrātapataye namo gaṇapataye namaḥ pramathapataye namaste astu lambodarāya ekadantāya vighnanāśine śivasutāya śrīvaradamūrtaye namaḥ ॥"
+];
+const DEV = ["०","१","२","३","४","५","६","७","८","९"];
+const devNum = n => String(n).split("").map(d=>DEV[+d]).join("");
+
+// Build units: each verse -> array of phrases -> array of words
+const split = v => v.replace(/॥$/,"").split("।").map(p=>p.trim()).filter(Boolean).map(p=>p.split(/\s+/));
+const DATA = VERSES.map(split), RDATA = ROMAN.map(split);
+let script="dev";
+
+let v=0, p=0, w=0, unit="word", playing=false, timer=null, userScrollTs=-1e9;
+const $=id=>document.getElementById(id);
+
+function verseHTML(vi){
+  const verse=DATA[vi]; const html=[];
+  verse.forEach((phrase,pi)=>{
+    phrase.forEach((word,wi)=>{
+      let cls="w";
+      const isNow = unit==="word" ? (pi===p&&wi===w) : pi===p;
+      const isDone = pi<p || (unit==="word" && pi===p && wi<w);
+      if(isNow) cls+=" now"; else if(isDone) cls+=" done";
+      const rw=RDATA[vi][pi][wi]||"";
+      const inner = script==="dev"?word: script==="rom"?rw: `<b>${word}</b><small>${rw}</small>`;
+      html.push(`<span class="${cls}" data-v="${vi}" data-p="${pi}" data-w="${wi}">${inner}</span>`);
+    });
+    html.push(`<span class="danda">${pi===verse.length-1?"॥":"।"}</span>`);
+  });
+  return html.join(" ");
+}
+let renderedKey="";
+function render(scroll=true){
+  const key=`${v}|${unit}|${script}`;
+  if(key===renderedKey){
+    // same verse: update classes in place so the DOM under the finger is never replaced
+    document.querySelectorAll("#all .w").forEach(el=>{
+      const pi=+el.dataset.p, wi=+el.dataset.w;
+      const isNow = unit==="word" ? (pi===p&&wi===w) : pi===p;
+      const isDone = pi<p || (unit==="word" && pi===p && wi<w);
+      el.classList.toggle("now",isNow); el.classList.toggle("done",!isNow&&isDone);
+    });
+  } else {
+  renderedKey=key;
+  $("all").innerHTML=DATA.map((_,i)=>{
+    const body = i===v ? `<div class="text">${verseHTML(i)}</div>`
+                       : `<div class="ctx" data-jump="${i}">${script==="rom"?ROMAN[i]:VERSES[i]}</div>`;
+    return `<section class="verse${i===v?" cur":""}" id="verse-${i}"><span class="n">॥ ${devNum(i+1)} ॥</span>${body}</section>`;
+  }).join("");
+  }
+  $("verseNo").textContent=`॥ ${devNum(v+1)} ॥`;
+  $("progress").innerHTML=DATA.map((_,i)=>`<i class="${i<v?"done":i===v?"now":""}"></i>`).join("");
+  if(scroll && performance.now()-userScrollTs>4000){const el=document.querySelector(".w.now"); if(el) el.scrollIntoView({block:"center",behavior:"smooth"});}
+  $("hint").textContent = v===DATA.length-1 && p===DATA[v].length-1 && (unit==="phrase"||w===DATA[v][p].length-1)
+    ? "End of the hymn" : "Scroll freely · tap any word to jump there";
+}
+function step(dir){
+  if(unit==="word"){
+    w+=dir;
+    if(w>=DATA[v][p].length){w=0;p++} else if(w<0){p--; if(p>=0) w=DATA[v][p].length-1}
+  } else { p+=dir; w=0; }
+  if(p>=DATA[v].length){ if(v<DATA.length-1){v++;p=0;w=0} else {p=DATA[v].length-1; w=unit==="word"?DATA[v][p].length-1:0; stop()} }
+  else if(p<0){ if(v>0){v--;p=DATA[v].length-1; w=unit==="word"?DATA[v][p].length-1:0} else {p=0;w=0} }
+  render();
+}
+/* mātrā (metrical beat) count of a Devanagari word: laghu=1, guru=2 */
+function matras(w){
+  w=w.replace(/ॐ/g,"ओम्"); const LONG="आईऊएऐओऔ";
+  const isC=c=>c>="क"&&c<="ह"; let n=0;
+  for(let i=0;i<w.length;i++){
+    const c=w[i], nx=w[i+1]||"", nx2=w[i+2]||"";
+    let syl=false, guru=false;
+    if(c>="अ"&&c<="औ"){syl=true; guru=LONG.includes(c);}
+    else if(isC(c)&&nx!=="्"){syl=true; if(nx&&"ाीूेैोौ".includes(nx)) guru=true;}
+    if(!syl) continue;
+    // look past matra for anusvara/visarga/conjunct
+    let j=i+1; if(w[j]&&"ािीुूेैोौ".includes(w[j])) j++;
+    if(w[j]==="ं"||w[j]==="ः"||w[j]==="ँ") guru=true;
+    if(isC(w[j])&&w[j+1]==="्") guru=true;
+    n+=guru?2:1;
+  }
+  return Math.max(n,1);
+}
+const MATRA_MS=125, DANDA_MS=450, VERSE_MS=1200;   // group recordings: ~5 syl/s; breath at danda / verse end
+let CALIB=null; try{CALIB=JSON.parse(localStorage.getItem("as_calib")||"null")}catch(_){}
+const breath=()=>{ const lastW = unit==="phrase" || w===DATA[v][p].length-1; if(!lastW) return 0; return p===DATA[v].length-1 ? VERSE_MS : DANDA_MS; };
+function wordMs(){
+  const key=`${v}.${p}.${w}`;
+  if(CALIB&&CALIB[key]) return CALIB[key]/+$("pace").value;
+  return (matras(DATA[v][p][w])*MATRA_MS+breath())/+$("pace").value;
+}
+const interval=()=> unit==="phrase" ? (DATA[v][p].reduce((a,x)=>a+matras(x),0)*MATRA_MS+breath())/+$("pace").value : wordMs();
+function tick(){ step(1); if(playing) timer=setTimeout(tick, interval()); }
+/* calibration: tap Next in time with the chant; gaps are stored per word */
+let calib=false, lastTap=0;
+function calibTap(){ const now=performance.now(); if(lastTap){ const key=`${v}.${p}.${w}`; CALIB=CALIB||{}; CALIB[key]=Math.min(4000,Math.max(120,now-lastTap)); } lastTap=now; }
+function saveCalib(){ try{localStorage.setItem("as_calib",JSON.stringify(CALIB))}catch(_){} }
+function stop(){ playing=false; clearTimeout(timer); $("playBtn").textContent="▶"; $("playBtn").setAttribute("aria-label","Play"); }
+function play(){ if(listening) stopMic(); playing=true; $("playBtn").textContent="❙❙"; $("playBtn").setAttribute("aria-label","Pause"); timer=setTimeout(tick,interval()); }
+
+$("nextBtn").onclick=()=>{ if(calib) calibTap(); step(1); };
+/* manual scrolling pauses auto-follow for 4 s so play never fights the thumb */
+["touchstart","wheel","pointerdown"].forEach(ev=>$("main").addEventListener(ev,()=>{userScrollTs=performance.now()},{passive:true}));
+$("prevBtn").onclick=()=>step(-1);
+$("resetBtn").onclick=()=>{ stop(); if(listening) stopMic(); v=0;p=0;w=0; render(); $("main").scrollTo({top:0,behavior:"smooth"}); };
+$("playBtn").onclick=()=>playing?stop():play();
+$("pace").oninput=e=>{$("paceVal").textContent=(+e.target.value)+"×"; try{localStorage.setItem("as_speed",e.target.value)}catch(_){}};
+try{const sp=localStorage.getItem("as_speed"); if(sp){$("pace").value=sp; $("paceVal").textContent=(+sp)+"×"}}catch(_){}
+$("all").onclick=e=>{
+  const j=e.target.closest(".ctx"); if(j){v=+j.dataset.jump;p=0;w=0;render();return;}
+  const t=e.target.closest(".w"); if(!t) return; v=+t.dataset.v; p=+t.dataset.p; w=unit==="word"?+t.dataset.w:0; render(false);};
+function seg(id,cb){ $(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{ $(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); cb(b.dataset.v); }); }
+seg("styleSeg",val=>{document.body.dataset.style=val; try{localStorage.setItem("as_style",val)}catch(e){}});
+seg("unitSeg",val=>{unit=val; w=0; render();});
+seg("scriptSeg",val=>{script=val; document.body.dataset.script=val; render(); try{localStorage.setItem("as_script",val)}catch(e){}});
+
+/* ---------- Mic follow ---------- */
+let rec=null, listening=false, recLang="hi-IN", finalText="";
+const heard=$("heard");
+const norm=t=>t.normalize("NFC").replace(/[\u0901]/g,"\u0902").replace(/[\u093C\u093D\u0964\u0965\u0970\s]/g,"").replace(/ॐ/g,"ओम्").replace(/[्]$/,"");
+function lev(a,b){const m=a.length,n=b.length; if(!m||!n) return Math.max(m,n); let prev=[...Array(n+1).keys()],cur=[];
+  for(let i=1;i<=m;i++){cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur;} return prev[n];}
+const sim=(a,b)=>1-lev(a,b)/Math.max(a.length,b.length,1);
+// flat index of every word in the hymn
+const FLAT=[]; DATA.forEach((verse,vi)=>verse.forEach((ph,pi)=>ph.forEach((wd,wi)=>FLAT.push({v:vi,p:pi,w:wi,t:norm(wd)}))));
+const flatPos=()=>FLAT.findIndex(x=>x.v===v&&x.p===p&&x.w===w);
+function follow(transcript){
+  const tail=norm(transcript).slice(-40); if(tail.length<3) return;
+  const cur=flatPos(), lo=Math.max(0,cur-2), hi=Math.min(FLAT.length-1,cur+14);
+  let best={score:0,idx:-1};
+  for(let j=lo;j<=hi;j++){
+    for(let span=1;span<=3&&j-span+1>=0;span++){
+      const target=FLAT.slice(j-span+1,j+1).map(x=>x.t).join("");
+      const cand=tail.slice(-Math.min(tail.length,target.length+2));
+      // compare target against the end of what was heard
+      const sc=sim(target,cand.slice(-target.length))* (1 - Math.abs(j-cur)*0.015);
+      if(sc>best.score) best={score:sc,idx:j};
+    }
+  }
+  if(best.score>=0.62 && best.idx!==cur){ const f=FLAT[best.idx]; v=f.v;p=f.p;w=f.w; render(); }
+}
+function startMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){heard.className="heard err";heard.textContent="Speech recognition isn't available in this browser — use Chrome on Android.";return;}
+  rec=new SR(); rec.lang=recLang; rec.continuous=true; rec.interimResults=true; rec.maxAlternatives=1;
+  rec.onresult=e=>{let interim=""; for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i]; if(r.isFinal) finalText+=r[0].transcript+" "; else interim+=r[0].transcript;}
+    finalText=finalText.slice(-200); const all=finalText+interim; heard.className="heard"; heard.innerHTML="<span>"+all.slice(-60)+"</span>"; follow(all);};
+  const MSG={"not-allowed":"Microphone blocked. Chrome won't grant mic access to a file:// page — host it on https.","service-not-allowed":"Speech service not allowed on this origin — host it on https.","network":"Speech service needs internet (Google recognizer).","audio-capture":"No microphone found.","no-speech":"Nothing heard yet…","aborted":"Recognition aborted."};
+  rec.onerror=e=>{ const fatal=["not-allowed","service-not-allowed","audio-capture"].includes(e.error);
+    if(fatal) stopMic(true); heard.className="heard err"; heard.textContent=MSG[e.error]||("Error: "+e.error); };
+  rec.onend=()=>{ if(listening){ heard.className="heard"; if(!heard.textContent) heard.textContent="Listening…"; try{rec.start()}catch(_){} } };
+  try{rec.start(); listening=true; stop(); $("micBtn").classList.add("on"); heard.className="heard"; heard.textContent="Listening…";}catch(err){heard.className="heard err";heard.textContent="Couldn't start the microphone.";}
+}
+function stopMic(keepMsg){ listening=false; if(rec){rec.onend=null; try{rec.stop()}catch(_){}} $("micBtn").classList.remove("on"); if(!keepMsg) heard.textContent=""; finalText=""; }
+$("micBtn").onclick=()=>listening?stopMic():startMic();
+$("calibSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  if(b.dataset.v==="clear"){ CALIB=null; try{localStorage.removeItem("as_calib")}catch(_){} calib=false; lastTap=0; $("calibSeg").querySelector('[data-v="on"]').setAttribute("aria-pressed","false"); heard.className="heard"; heard.textContent="Timing reset to mātrā defaults"; return; }
+  calib=!calib; lastTap=0; b.setAttribute("aria-pressed",String(calib));
+  if(calib){ stop(); if(listening) stopMic(); heard.className="heard"; heard.textContent="Play the recording; tap Next on each word"; }
+  else { saveCalib(); heard.textContent=CALIB?`Saved timing for ${Object.keys(CALIB).length} words`:""; }
+});
+seg("langSeg",val=>{recLang=val; if(listening){stopMic();startMic();}});
+/* ---------- TV mode ---------- */
+let uiTimer=null;
+function showUI(){ document.body.classList.add("show-ui"); clearTimeout(uiTimer); uiTimer=setTimeout(()=>document.body.classList.remove("show-ui"),3500); }
+function setTV(on){
+  document.body.dataset.tv=on?"1":"0"; $("tvBtn").setAttribute("aria-pressed",String(on));
+  try{localStorage.setItem("as_tv",on?"1":"0")}catch(_){}
+  if(on){ showUI(); if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); }
+  else { document.body.classList.remove("show-ui"); if(document.fullscreenElement) document.exitFullscreen().catch(()=>{}); }
+  render();
+}
+$("tvBtn").onclick=()=>setTV(document.body.dataset.tv!=="1");
+["mousemove","touchstart","pointerdown"].forEach(ev=>document.addEventListener(ev,()=>{ if(document.body.dataset.tv==="1") showUI(); },{passive:true}));
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT"&&e.key!=="Escape") return;
+  const k=e.key;
+  if(k===" "){e.preventDefault(); playing?stop():play();}
+  else if(k==="ArrowRight"){step(1)} else if(k==="ArrowLeft"){step(-1)}
+  else if(k.toLowerCase()==="r"){$("resetBtn").click()}
+  else if(k.toLowerCase()==="m"){$("micBtn").click()}
+  else if(k.toLowerCase()==="f"){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); }
+  else if(k.toLowerCase()==="t"){ setTV(document.body.dataset.tv!=="1"); }
+  else if(k==="Escape"&&document.body.dataset.tv==="1"){ setTV(false); }
+  if(document.body.dataset.tv==="1") showUI();
+});
+try{ if(localStorage.getItem("as_tv")==="1"){ document.body.dataset.tv="1"; $("tvBtn").setAttribute("aria-pressed","true"); } }catch(_){}
+$("themeBtn").onclick=()=>{const cur=document.documentElement.dataset.theme==="light"?"dark":"light"; document.documentElement.dataset.theme=cur; $("themeBtn").textContent=cur==="light"?"☀":"☾"; try{localStorage.setItem("as_theme",cur)}catch(e){}};
+try{const sc=localStorage.getItem("as_script"); if(sc){script=sc; document.body.dataset.script=sc; $("scriptSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===sc)))}}catch(e){}
+try{const s=localStorage.getItem("as_style"); if(s){document.body.dataset.style=s; $("styleSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===s)))}
+    const t=localStorage.getItem("as_theme"); if(t){document.documentElement.dataset.theme=t; $("themeBtn").textContent=t==="light"?"☀":"☾"}}catch(e){}
+render();
+</script>
+</body>
+</html>
