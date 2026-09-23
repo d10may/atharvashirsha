@@ -39,13 +39,13 @@ html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--ui);display:flex;flex-direction:column;overflow:hidden}
 *{box-sizing:inherit}
 
-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px;gap:12px}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px;gap:8px;flex-wrap:wrap}
 .verse-no{font-family:var(--sanskrit);font-size:1.4rem;color:var(--gold);line-height:1}
 .progress{display:flex;gap:5px;flex:1;justify-content:center}
 .progress i{width:6px;height:6px;border-radius:50%;background:var(--ink-dim);opacity:.5}
 .progress i.done{background:var(--gold);opacity:.8}
 .progress i.now{background:var(--kesari);opacity:1;transform:scale(1.4)}
-.icon-btn{background:none;border:1px solid var(--line);color:var(--ink);width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer}
+.icon-btn{background:none;border:2px solid var(--line);color:var(--ink);min-width:48px;height:48px;padding:0 14px;border-radius:14px;font-size:1rem;font-family:var(--ui);cursor:pointer;white-space:nowrap}
 .icon-btn:focus-visible,button:focus-visible{outline:2px solid var(--kesari);outline-offset:2px}
 
 main{flex:1;overflow-y:auto;padding:12px 22px 40px;-webkit-overflow-scrolling:touch}
@@ -91,17 +91,35 @@ body[data-style="pill"] .w.now{color:var(--bg);background:var(--kesari);font-wei
 
 footer{border-top:1px solid var(--line);background:var(--bg-2);padding:10px 18px 12px}
 .controls{display:flex;align-items:center;justify-content:center;gap:12px}
-.ctrl{background:none;border:1px solid var(--line);color:var(--ink);border-radius:50%;width:48px;height:48px;font-size:1.1rem;cursor:pointer}
-#resetBtn{width:40px;height:40px;font-size:1.05rem;color:var(--ink-done)}
-.ctrl.play{width:64px;height:64px;background:var(--kesari);border-color:var(--kesari);color:#16121F;font-size:1.4rem}
-.row{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:.85rem;color:var(--ink-done)}
+.ctrl{background:none;border:2px solid var(--line);color:var(--ink);border-radius:50%;width:60px;height:60px;font-size:1.4rem;cursor:pointer}
+#resetBtn{width:54px;height:54px;font-size:1.3rem;color:var(--ink-done)}
+.ctrl.play{width:76px;height:76px;background:var(--kesari);border-color:var(--kesari);color:#16121F;font-size:1.8rem}
+.row{display:flex;align-items:center;gap:12px;margin-top:12px;font-size:1rem;color:var(--ink-done)}
+.row input[type=range]{height:34px}
 .row label{white-space:nowrap}
 .row input[type=range]{flex:1;accent-color:var(--kesari)}
-.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;font-size:.8rem}
-.seg button{background:none;border:0;color:var(--ink-done);padding:6px 12px;cursor:pointer;font-family:var(--ui)}
+.seg{display:flex;border:2px solid var(--line);border-radius:999px;overflow:hidden;font-size:1rem}
+.seg button{background:none;border:0;color:var(--ink-done);padding:12px 16px;cursor:pointer;font-family:var(--ui);font-size:1rem}
 .seg button[aria-pressed="true"]{background:var(--line);color:var(--ink)}
 .opts{display:flex;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
 @media (prefers-reduced-motion: reduce){.w{transition:none}body[data-style="glow"] .w.now{transform:none}}
+
+/* ---------- Read mode: plain continuous text ---------- */
+body[data-read="1"] header,body[data-read="1"] footer,body[data-read="1"] .prev-next{display:none}
+body[data-read="1"] main{padding:4vh 6vw 20vh;scroll-behavior:smooth}
+#reader{max-width:30em;margin:0 auto;font-family:var(--sanskrit);font-size:var(--rsize,2rem);line-height:2.25;color:var(--ink);text-align:left}
+#reader .rv{margin:0 0 1.5em}
+#reader .rn{display:block;font-size:.85em;color:var(--gold);text-align:center;margin-bottom:.4em}
+#reader .rd{color:var(--ink-dim);margin:0 .12em}
+#reader .rr{display:block;font-size:.62em;line-height:1.75;color:var(--ink-done);opacity:.85;margin-top:.5em}
+#readbar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:var(--bg-2);border-top:2px solid var(--line);z-index:5}
+#readbar button{background:none;border:2px solid var(--line);color:var(--ink);border-radius:14px;
+  min-width:72px;height:60px;padding:0 18px;font-size:1.3rem;font-weight:500;cursor:pointer;font-family:var(--ui)}
+#readbar #rExit{background:var(--kesari);border-color:var(--kesari);color:var(--bg);min-width:108px}
+#readbar .sz{font-variant-numeric:tabular-nums;color:var(--ink-done);font-size:1.05rem;min-width:3.6em;text-align:center}
+body[data-read="1"] #readbar{display:flex}
+#readbar{display:none}
 
 /* ---------- TV / projector mode ---------- */
 body[data-tv="1"]{cursor:none}
@@ -136,12 +154,14 @@ body[data-tv="1"] .kbd{display:block}
 <header>
   <div class="verse-no" id="verseNo">॥ १ ॥</div>
   <div class="progress" id="progress"></div>
-  <button class="icon-btn" id="tvBtn" title="TV / projector mode" aria-label="TV mode">⛶</button>
+  <button class="icon-btn" id="readBtn" title="Read mode" aria-label="Read mode">Read</button>
+  <button class="icon-btn" id="tvBtn" title="TV / projector mode" aria-label="TV mode">TV</button>
   <button class="icon-btn" id="themeBtn" title="Day / night" aria-label="Toggle day or night">☾</button>
 </header>
 
 <main id="main">
   <div id="all"></div>
+  <div id="reader" hidden></div>
   <div class="prev-next" id="hint">Scroll freely · tap any word to jump there</div>
 </main>
 
@@ -185,6 +205,12 @@ body[data-tv="1"] .kbd{display:block}
     </div>
   </div>
 </footer>
+<div id="readbar">
+  <button id="rSmall" aria-label="Smaller text">A−</button>
+  <span class="sz" id="rSize">100%</span>
+  <button id="rBig" aria-label="Larger text">A+</button>
+  <button id="rExit" aria-label="Exit read mode">Done</button>
+</div>
 
 <script>
 const VERSES = [
@@ -321,7 +347,7 @@ $("all").onclick=e=>{
 function seg(id,cb){ $(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{ $(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); cb(b.dataset.v); }); }
 seg("styleSeg",val=>{document.body.dataset.style=val; try{localStorage.setItem("as_style",val)}catch(e){}});
 seg("unitSeg",val=>{unit=val; w=0; render();});
-seg("scriptSeg",val=>{script=val; document.body.dataset.script=val; render(); try{localStorage.setItem("as_script",val)}catch(e){}});
+seg("scriptSeg",val=>{script=val; document.body.dataset.script=val; renderedKey=""; render(); if(document.body.dataset.read==="1") buildReader(); try{localStorage.setItem("as_script",val)}catch(e){}});
 
 /* ---------- Mic follow ---------- */
 let rec=null, listening=false, recLang="hi-IN", finalText="";
@@ -369,6 +395,33 @@ $("calibSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
   else { saveCalib(); heard.textContent=CALIB?`Saved timing for ${Object.keys(CALIB).length} words`:""; }
 });
 seg("langSeg",val=>{recLang=val; if(listening){stopMic();startMic();}});
+/* ---------- Read mode ---------- */
+let reading=false, rSize=110, rUiTimer=null;
+try{const z=+localStorage.getItem("as_rsize"); if(z>=70&&z<=220) rSize=z;}catch(_){}
+function applySize(){ document.documentElement.style.setProperty("--rsize",(rSize/100*2).toFixed(3)+"rem"); $("rSize").textContent=rSize+"%"; try{localStorage.setItem("as_rsize",rSize)}catch(_){} }
+function buildReader(){
+  $("reader").innerHTML=VERSES.map((dv,i)=>{
+    const body = script==="rom" ? ROMAN[i]
+      : script==="both" ? dv.replace(/([।॥])/g,'<span class="rd">$1</span>')+`<span class="rr">${ROMAN[i]}</span>`
+      : dv.replace(/([।॥])/g,'<span class="rd">$1</span>');
+    const txt = script==="rom" ? body.replace(/([।॥])/g,'<span class="rd">$1</span>') : body;
+    return `<p class="rv"><span class="rn">॥ ${devNum(i+1)} ॥</span>${txt}</p>`;
+  }).join("");
+}
+function showReadUI(){}   /* read-mode bar stays visible: nothing to reveal */
+function setRead(on){
+  reading=on; document.body.dataset.read=on?"1":"0";
+  $("readBtn").setAttribute("aria-pressed",String(on));
+  $("all").hidden=on; $("reader").hidden=!on;
+  if(on){ stop(); if(listening) stopMic(); buildReader(); applySize(); showReadUI(); $("main").scrollTo({top:0}); }
+  else { renderedKey=""; render(); }
+}
+$("readBtn").onclick=()=>setRead(!reading);
+$("rExit").onclick=()=>setRead(false);
+$("rSmall").onclick=()=>{rSize=Math.max(70,rSize-10);applySize();showReadUI();};
+$("rBig").onclick=()=>{rSize=Math.min(220,rSize+10);applySize();showReadUI();};
+["touchstart","pointerdown","mousemove"].forEach(ev=>document.addEventListener(ev,()=>{ if(reading) showReadUI(); },{passive:true}));
+
 /* ---------- TV mode ---------- */
 let uiTimer=null;
 function showUI(){ document.body.classList.add("show-ui"); clearTimeout(uiTimer); uiTimer=setTimeout(()=>document.body.classList.remove("show-ui"),3500); }
@@ -390,6 +443,7 @@ document.addEventListener("keydown",e=>{
   else if(k.toLowerCase()==="m"){$("micBtn").click()}
   else if(k.toLowerCase()==="f"){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); }
   else if(k.toLowerCase()==="t"){ setTV(document.body.dataset.tv!=="1"); }
+  else if(k==="Escape"&&reading){ setRead(false); }
   else if(k==="Escape"&&document.body.dataset.tv==="1"){ setTV(false); }
   if(document.body.dataset.tv==="1") showUI();
 });
