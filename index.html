@@ -82,6 +82,8 @@ body[data-style="pill"] .w.now{color:var(--bg);background:var(--kesari);font-wei
 .verse.cur .n{opacity:1}
 .ctrl.mic{position:relative}
 .ctrl.mic.on{border-color:var(--kesari);color:var(--kesari)}
+.ctrl.mic.on.lost{border-color:var(--ink-done);color:var(--ink-done)}
+.ctrl.mic.on.lost::after{border-color:var(--ink-done);animation-duration:2.6s}
 .ctrl.mic.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--kesari);animation:pulse 1.4s ease-out infinite}
 @keyframes pulse{from{transform:scale(.9);opacity:.9}to{transform:scale(1.35);opacity:0}}
 .heard{font-family:var(--sanskrit);font-size:.95rem;color:var(--ink-done);text-align:center;min-height:1.4em;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl}
@@ -173,7 +175,7 @@ body[data-tv="1"] .kbd{display:block}
     <button class="ctrl" id="nextBtn" aria-label="Next">›</button>
     <button class="ctrl mic" id="micBtn" aria-label="Listen and follow">🎙</button>
   </div>
-  <div class="heard" id="heard"></div>
+  <div class="heard" id="heard" role="status" aria-live="polite"></div>
   <div class="kbd">Space play/pause · ← → step · R restart · M mic · F fullscreen · Esc exit TV</div>
   <div class="row">
     <label for="pace">Speed</label>
@@ -338,63 +340,168 @@ $("nextBtn").onclick=()=>{ if(calib) calibTap(); step(1); };
 ["touchstart","wheel","pointerdown"].forEach(ev=>$("main").addEventListener(ev,()=>{userScrollTs=performance.now()},{passive:true}));
 $("prevBtn").onclick=()=>step(-1);
 $("resetBtn").onclick=()=>{ stop(); if(listening) stopMic(); v=0;p=0;w=0; render(); $("main").scrollTo({top:0,behavior:"smooth"}); };
+$("prevBtn").addEventListener("click",()=>{ if(listening) resetHeard(); });
+$("nextBtn").addEventListener("click",()=>{ if(listening) resetHeard(); });
 $("playBtn").onclick=()=>playing?stop():play();
 $("pace").oninput=e=>{$("paceVal").textContent=(+e.target.value)+"×"; try{localStorage.setItem("as_speed",e.target.value)}catch(_){}};
 try{const sp=localStorage.getItem("as_speed"); if(sp){$("pace").value=sp; $("paceVal").textContent=(+sp)+"×"}}catch(_){}
 $("all").onclick=e=>{
-  const j=e.target.closest(".ctx"); if(j){v=+j.dataset.jump;p=0;w=0;render();return;}
-  const t=e.target.closest(".w"); if(!t) return; v=+t.dataset.v; p=+t.dataset.p; w=unit==="word"?+t.dataset.w:0; render(false);};
+  const j=e.target.closest(".ctx"); if(j){v=+j.dataset.jump;p=0;w=0;render(); if(typeof resetHeard==="function") resetHeard(); return;}
+  const t=e.target.closest(".w"); if(!t) return; v=+t.dataset.v; p=+t.dataset.p; w=unit==="word"?+t.dataset.w:0; render(false); if(typeof resetHeard==="function") resetHeard();};
 function seg(id,cb){ $(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{ $(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); cb(b.dataset.v); }); }
 seg("styleSeg",val=>{document.body.dataset.style=val; try{localStorage.setItem("as_style",val)}catch(e){}});
 seg("unitSeg",val=>{unit=val; w=0; render();});
 seg("scriptSeg",val=>{script=val; document.body.dataset.script=val; renderedKey=""; render(); if(document.body.dataset.read==="1") buildReader(); try{localStorage.setItem("as_script",val)}catch(e){}});
 
 /* ---------- Mic follow ---------- */
-let rec=null, listening=false, recLang="hi-IN", finalText="";
+let rec=null, listening=false, recLang="hi-IN", finalText="", wakeLock=null;
+let restartDelay=250, lastFollow=0, lostSince=0, tracking=false, startingMic=false;
 const heard=$("heard");
-const norm=t=>t.normalize("NFC").replace(/[\u0901]/g,"\u0902").replace(/[\u093C\u093D\u0964\u0965\u0970\s]/g,"").replace(/ॐ/g,"ओम्").replace(/[्]$/,"");
+
+/* --- normalisation: identical treatment for hymn text and transcript --- */
+function norm(t){
+  return t.normalize("NFC")
+    .replace(/\u0950/g,"\u0913\u092E\u094D")          // ॐ -> ओम्  (before virama strip)
+    .replace(/[\u0901]/g,"\u0902")                     // chandrabindu -> anusvara
+    .replace(/[\u200C\u200D\u093C\u093D\u0964\u0965\u0970]/g,"")  // ZWNJ/ZWJ/nukta/avagraha/dandas
+    .replace(/[^\u0900-\u097F]/g,"")                   // drop latin punctuation, digits, spaces
+    .replace(/\u094D/g,"");                            // virama everywhere, both sides
+}
+/* phonetic skeleton: fold the distinctions Hindi/Marathi models confuse in Sanskrit */
+const FOLD={"\u0936":"\u0938","\u0937":"\u0938","\u0938":"\u0938",       // श ष स
+  "\u092C":"\u0935","\u0935":"\u0935",                                   // ब व
+  "\u0923":"\u0928","\u0928":"\u0928","\u0919":"\u0928","\u091E":"\u0928", // ण न ङ ञ
+  "\u0916":"\u0915","\u0915":"\u0915","\u0918":"\u0917","\u0917":"\u0917",
+  "\u091B":"\u091A","\u091A":"\u091A","\u091D":"\u091C","\u091C":"\u091C",
+  "\u0920":"\u091F","\u091F":"\u091F","\u0922":"\u0921","\u0921":"\u0921",
+  "\u0925":"\u0924","\u0924":"\u0924","\u0927":"\u0926","\u0926":"\u0926",
+  "\u092B":"\u092A","\u092A":"\u092A","\u092D":"\u092C","\u0933":"\u0932",
+  "\u0940":"\u093F","\u093F":"\u093F","\u0942":"\u0941","\u0941":"\u0941",
+  "\u0906":"\u0905","\u0905":"\u0905","\u0908":"\u0907","\u0907":"\u0907",
+  "\u090A":"\u0909","\u0909":"\u0909","\u0903":"","\u0902":"\u092E"};
+const skel=t=>[...norm(t)].map(c=>FOLD[c]!==undefined?FOLD[c]:c).join("");
+
 function lev(a,b){const m=a.length,n=b.length; if(!m||!n) return Math.max(m,n); let prev=[...Array(n+1).keys()],cur=[];
   for(let i=1;i<=m;i++){cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur;} return prev[n];}
 const sim=(a,b)=>1-lev(a,b)/Math.max(a.length,b.length,1);
-// flat index of every word in the hymn
-const FLAT=[]; DATA.forEach((verse,vi)=>verse.forEach((ph,pi)=>ph.forEach((wd,wi)=>FLAT.push({v:vi,p:pi,w:wi,t:norm(wd)}))));
+/* best similarity allowing the tail to end up to `slack` chars early or late */
+function simSlack(target,tail,slack){
+  let best=0;
+  for(let off=0;off<=slack;off++){
+    const endCut = off===0 ? tail : tail.slice(0,-off);
+    if(endCut.length<2) break;
+    best=Math.max(best,sim(target,endCut.slice(-target.length)));
+  }
+  return best;
+}
+
+/* flat index of every word, with phonetic skeletons precomputed */
+const FLAT=[]; DATA.forEach((verse,vi)=>verse.forEach((ph,pi)=>ph.forEach((wd,wi)=>FLAT.push({v:vi,p:pi,w:wi,t:skel(wd)}))));
 const flatPos=()=>FLAT.findIndex(x=>x.v===v&&x.p===p&&x.w===w);
+
+/* --- tuning knobs, all in one place --- */
+const MIC={ back:6, fwd:12, span:3, tail:48, slack:3,
+            baseScore:0.60, perStep:0.012, maxScore:0.88, minInterval:220, lostAfter:6000 };
+
+function setStatus(txt,err){ heard.className="heard"+(err?" err":""); heard.textContent=txt; }
+function setTracking(on){ if(tracking===on) return; tracking=on; $("micBtn").classList.toggle("lost",!on); }
+
 function follow(transcript){
-  const tail=norm(transcript).slice(-40); if(tail.length<3) return;
-  const cur=flatPos(), lo=Math.max(0,cur-2), hi=Math.min(FLAT.length-1,cur+14);
+  const now=performance.now();
+  if(now-lastFollow<MIC.minInterval) return;          // debounce: at most ~4.5 checks/s
+  lastFollow=now;
+  const tail=skel(transcript).slice(-MIC.tail); if(tail.length<4) return;
+  const cur=flatPos(), lo=Math.max(0,cur-MIC.back), hi=Math.min(FLAT.length-1,cur+MIC.fwd);
   let best={score:0,idx:-1};
   for(let j=lo;j<=hi;j++){
-    for(let span=1;span<=3&&j-span+1>=0;span++){
+    for(let span=1;span<=MIC.span&&j-span+1>=0;span++){
       const target=FLAT.slice(j-span+1,j+1).map(x=>x.t).join("");
-      const cand=tail.slice(-Math.min(tail.length,target.length+2));
-      // compare target against the end of what was heard
-      const sc=sim(target,cand.slice(-target.length))* (1 - Math.abs(j-cur)*0.015);
+      if(target.length<2) continue;
+      const sc=simSlack(target,tail,MIC.slack);
       if(sc>best.score) best={score:sc,idx:j};
     }
   }
-  if(best.score>=0.62 && best.idx!==cur){ const f=FLAT[best.idx]; v=f.v;p=f.p;w=f.w; render(); }
+  if(best.idx<0) return;
+  // a bigger jump must clear a higher bar; a wrong long jump costs far more than a missed short one
+  const dist=Math.abs(best.idx-cur);
+  const need=Math.min(MIC.maxScore, MIC.baseScore+dist*MIC.perStep);
+  if(best.score>=need){
+    lostSince=0; setTracking(true);
+    if(best.idx!==cur){ const f=FLAT[best.idx]; v=f.v;p=f.p;w=f.w; render(); }
+  } else {
+    if(!lostSince) lostSince=now;
+    if(now-lostSince>MIC.lostAfter){ setTracking(false); setStatus("Can't place this — tap the word being recited"); }
+  }
 }
+
+/* keep the screen awake for the length of a recitation */
+async function acquireWake(){ try{ if("wakeLock" in navigator) wakeLock=await navigator.wakeLock.request("screen"); }catch(_){} }
+function releaseWake(){ try{ wakeLock&&wakeLock.release(); }catch(_){} wakeLock=null; }
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&listening&&!wakeLock) acquireWake(); });
+
+const MSG={"not-allowed":"Microphone blocked. Allow it in the site settings, then tap the mic again.",
+  "service-not-allowed":"Speech service not allowed on this origin — the page must be served over https.",
+  "network":"No internet. Speech recognition needs a connection.",
+  "audio-capture":"No microphone found.","no-speech":"Listening…","aborted":""};
+
 function startMic(){
+  if(startingMic||listening) return;
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){heard.className="heard err";heard.textContent="Speech recognition isn't available in this browser — use Chrome on Android.";return;}
+  if(!SR){ setStatus("Speech recognition isn't available in this browser — use Chrome on Android.",true); return; }
+  startingMic=true;
   rec=new SR(); rec.lang=recLang; rec.continuous=true; rec.interimResults=true; rec.maxAlternatives=1;
-  rec.onresult=e=>{let interim=""; for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i]; if(r.isFinal) finalText+=r[0].transcript+" "; else interim+=r[0].transcript;}
-    finalText=finalText.slice(-200); const all=finalText+interim; heard.className="heard"; heard.innerHTML="<span>"+all.slice(-60)+"</span>"; follow(all);};
-  const MSG={"not-allowed":"Microphone blocked. Chrome won't grant mic access to a file:// page — host it on https.","service-not-allowed":"Speech service not allowed on this origin — host it on https.","network":"Speech service needs internet (Google recognizer).","audio-capture":"No microphone found.","no-speech":"Nothing heard yet…","aborted":"Recognition aborted."};
-  rec.onerror=e=>{ const fatal=["not-allowed","service-not-allowed","audio-capture"].includes(e.error);
-    if(fatal) stopMic(true); heard.className="heard err"; heard.textContent=MSG[e.error]||("Error: "+e.error); };
-  rec.onend=()=>{ if(listening){ heard.className="heard"; if(!heard.textContent) heard.textContent="Listening…"; try{rec.start()}catch(_){} } };
-  try{rec.start(); listening=true; stop(); $("micBtn").classList.add("on"); heard.className="heard"; heard.textContent="Listening…";}catch(err){heard.className="heard err";heard.textContent="Couldn't start the microphone.";}
+  let consumed=0;                                    // guard against re-reading finalised results
+  rec.onresult=e=>{
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const r=e.results[i];
+      if(r.isFinal){ if(i>=consumed){ finalText+=r[0].transcript+" "; consumed=i+1; } }
+      else interim+=r[0].transcript;
+    }
+    if(finalText.length>240){                        // trim on a word boundary, not mid-word
+      const cutAt=finalText.length-240; const sp=finalText.indexOf(" ",cutAt);
+      finalText=finalText.slice(sp>=0?sp+1:cutAt);
+    }
+    const all=finalText+interim;
+    restartDelay=250;
+    if(heard.classList.contains("err")) heard.className="heard";
+    heard.innerHTML="<span>"+all.slice(-60)+"</span>";
+    follow(all);
+  };
+  rec.onerror=e=>{
+    if(["not-allowed","service-not-allowed","audio-capture"].includes(e.error)){ stopMic(true); setStatus(MSG[e.error],true); return; }
+    if(e.error==="network"){ restartDelay=Math.min(restartDelay*2,15000); setStatus(MSG.network,true); return; }
+    if(e.error==="no-speech"||e.error==="aborted") return;   // routine; onend will restart
+    setStatus("Error: "+e.error,true);
+  };
+  rec.onend=()=>{
+    if(!listening) return;
+    setTimeout(()=>{ if(listening){ try{ rec.start(); }catch(_){} } },restartDelay);
+  };
+  try{
+    rec.start(); listening=true; stop();
+    $("micBtn").classList.add("on"); setTracking(true); lostSince=0;
+    setStatus("Listening…"); acquireWake();
+  }catch(err){ setStatus("Couldn't start the microphone. Try again.",true); }
+  startingMic=false;
 }
-function stopMic(keepMsg){ listening=false; if(rec){rec.onend=null; try{rec.stop()}catch(_){}} $("micBtn").classList.remove("on"); if(!keepMsg) heard.textContent=""; finalText=""; }
+function stopMic(keepMsg){
+  listening=false; setTracking(true);
+  if(rec){ rec.onend=null; rec.onresult=null; rec.onerror=null; try{ rec.abort(); }catch(_){} rec=null; }
+  $("micBtn").classList.remove("on","lost");
+  if(!keepMsg) heard.textContent="";
+  finalText=""; lostSince=0; releaseWake();
+}
+/* clearing the buffer stops stale audio dragging the highlight back after a manual jump */
+function resetHeard(){ finalText=""; lostSince=0; lastFollow=0; if(listening){ setTracking(true); setStatus("Listening…"); } }
 $("micBtn").onclick=()=>listening?stopMic():startMic();
 $("calibSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
-  if(b.dataset.v==="clear"){ CALIB=null; try{localStorage.removeItem("as_calib")}catch(_){} calib=false; lastTap=0; $("calibSeg").querySelector('[data-v="on"]').setAttribute("aria-pressed","false"); heard.className="heard"; heard.textContent="Timing reset to mātrā defaults"; return; }
+  if(b.dataset.v==="clear"){ CALIB=null; try{localStorage.removeItem("as_calib")}catch(_){} calib=false; lastTap=0; $("calibSeg").querySelector('[data-v="on"]').setAttribute("aria-pressed","false"); setStatus("Timing reset to mātrā defaults"); return; }
   calib=!calib; lastTap=0; b.setAttribute("aria-pressed",String(calib));
-  if(calib){ stop(); if(listening) stopMic(); heard.className="heard"; heard.textContent="Play the recording; tap Next on each word"; }
+  if(calib){ stop(); if(listening) stopMic(); setStatus("Play the recording; tap Next on each word"); }
   else { saveCalib(); heard.textContent=CALIB?`Saved timing for ${Object.keys(CALIB).length} words`:""; }
 });
-seg("langSeg",val=>{recLang=val; if(listening){stopMic();startMic();}});
+seg("langSeg",val=>{recLang=val; if(listening){ stopMic(); setTimeout(startMic,350); }});
 /* ---------- Read mode ---------- */
 let reading=false, rSize=110, rUiTimer=null;
 try{const z=+localStorage.getItem("as_rsize"); if(z>=70&&z<=220) rSize=z;}catch(_){}
