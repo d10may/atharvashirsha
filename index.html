@@ -80,6 +80,8 @@ body[data-style="pill"] .w.now{color:var(--bg);background:var(--kesari);font-wei
 .verse .n{display:block;text-align:center;font-family:var(--sanskrit);color:var(--gold);opacity:.8;margin-bottom:6px}
 .verse .ctx{margin:0}
 .verse.cur .n{opacity:1}
+/* mic feature hidden from the UI (data-mic="off"); logic left intact below */
+body[data-mic="off"] #micBtn,body[data-mic="off"] #langField{display:none}
 .ctrl.mic{position:relative}
 .ctrl.mic.on{border-color:var(--kesari);color:var(--kesari)}
 .ctrl.mic.on.lost{border-color:var(--ink-done);color:var(--ink-done)}
@@ -94,7 +96,12 @@ body[data-style="pill"] .w.now{color:var(--bg);background:var(--kesari);font-wei
 footer{border-top:1px solid var(--line);background:var(--bg-2);padding:10px 18px 12px}
 .controls{display:flex;align-items:center;justify-content:center;gap:12px}
 .ctrl{background:none;border:2px solid var(--line);color:var(--ink);border-radius:50%;width:60px;height:60px;font-size:1.4rem;cursor:pointer}
-#resetBtn{width:54px;height:54px;font-size:1.3rem;color:var(--ink-done)}
+#resetBtn{height:60px;padding:0 20px;border:2px solid var(--line);border-radius:14px;background:none;
+  color:var(--ink);font-family:var(--ui);font-size:1.1rem;cursor:pointer;white-space:nowrap}
+/* at the end of the hymn Play has nothing left to do: offer the loop where the thumb already is */
+body[data-end="1"] #playBtn,body[data-end="1"] #prevBtn,body[data-end="1"] #nextBtn{display:none}
+body[data-end="1"] #resetBtn{background:var(--kesari);border-color:var(--kesari);color:var(--bg);
+  height:76px;font-size:1.35rem;font-weight:500;padding:0 34px}
 .ctrl.play{width:76px;height:76px;background:var(--kesari);border-color:var(--kesari);color:#16121F;font-size:1.8rem}
 .row{display:flex;align-items:center;gap:12px;margin-top:12px;font-size:1rem;color:var(--ink-done)}
 .row input[type=range]{height:34px}
@@ -104,6 +111,21 @@ footer{border-top:1px solid var(--line);background:var(--bg-2);padding:10px 18px
 .seg button{background:none;border:0;color:var(--ink-done);padding:12px 16px;cursor:pointer;font-family:var(--ui);font-size:1rem}
 .seg button[aria-pressed="true"]{background:var(--line);color:var(--ink)}
 .opts{display:flex;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
+/* settings live in a sheet so the everyday controls stay uncluttered */
+#sheet{position:fixed;inset:0;z-index:20;display:none;background:rgba(0,0,0,.55)}
+#sheet.open{display:block}
+#sheetPanel{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;background:var(--bg-2);
+  border-top:2px solid var(--line);border-radius:22px 22px 0 0;
+  padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+#sheetPanel h3{margin:0 0 18px;font-family:var(--ui);font-size:1.35rem;font-weight:500;color:var(--ink)}
+.field{margin-bottom:22px}
+.field > span{display:block;font-size:1.05rem;color:var(--ink-done);margin-bottom:9px}
+.field .seg{width:100%}
+.field .seg button{flex:1;padding:14px 8px}
+#sheetDone{width:100%;height:60px;border:0;border-radius:14px;background:var(--kesari);color:var(--bg);
+  font-family:var(--ui);font-size:1.25rem;font-weight:500;cursor:pointer;margin-top:4px}
+#settingsBtn{margin-top:12px;width:100%;height:52px;background:none;border:2px solid var(--line);
+  border-radius:14px;color:var(--ink-done);font-family:var(--ui);font-size:1.05rem;cursor:pointer}
 @media (prefers-reduced-motion: reduce){.w{transition:none}body[data-style="glow"] .w.now{transform:none}}
 
 /* ---------- Read mode: plain continuous text ---------- */
@@ -152,7 +174,7 @@ body[data-tv="1"] .seg,body[data-tv="1"] .row{font-size:1.9vh}
 body[data-tv="1"] .kbd{display:block}
 </style>
 </head>
-<body data-style="glow" data-script="dev">
+<body data-style="glow" data-script="dev" data-mic="off">
 <header>
   <div class="verse-no" id="verseNo">॥ १ ॥</div>
   <div class="progress" id="progress"></div>
@@ -169,44 +191,59 @@ body[data-tv="1"] .kbd{display:block}
 
 <footer>
   <div class="controls">
-    <button class="ctrl" id="resetBtn" aria-label="Back to start" title="Back to start">↺</button>
     <button class="ctrl" id="prevBtn" aria-label="Previous">‹</button>
     <button class="ctrl play" id="playBtn" aria-label="Play">▶</button>
     <button class="ctrl" id="nextBtn" aria-label="Next">›</button>
+    <button id="resetBtn">Start again</button>
     <button class="ctrl mic" id="micBtn" aria-label="Listen and follow">🎙</button>
   </div>
   <div class="heard" id="heard" role="status" aria-live="polite"></div>
-  <div class="kbd">Space play/pause · ← → step · R restart · M mic · F fullscreen · Esc exit TV</div>
+  <div class="kbd">Space play/pause · ← → step · R restart · F fullscreen · Esc exit TV</div>
   <div class="row">
     <label for="pace">Speed</label>
     <input type="range" id="pace" min="0.5" max="5" step="0.25" value="1">
     <span id="paceVal">1×</span>
   </div>
-  <div class="opts">
-    <div class="seg" id="styleSeg" role="group" aria-label="Highlight style">
-      <button data-v="glow" aria-pressed="true">Glow</button>
-      <button data-v="bar" aria-pressed="false">Underline</button>
-      <button data-v="pill" aria-pressed="false">Pill</button>
-    </div>
+  <button id="settingsBtn">Settings</button>
+</footer>
+<div id="sheet" role="dialog" aria-modal="true" aria-label="Settings">
+  <div id="sheetPanel">
+    <h3>Settings</h3>
+    <div class="field"><span>Script</span>
     <div class="seg" id="scriptSeg" role="group" aria-label="Script">
       <button data-v="dev" aria-pressed="true">देवनागरी</button>
       <button data-v="rom" aria-pressed="false">Roman</button>
       <button data-v="both" aria-pressed="false">Both</button>
     </div>
-    <div class="seg" id="langSeg" role="group" aria-label="Recognition language">
-      <button data-v="hi-IN" aria-pressed="true">Hindi model</button>
-      <button data-v="mr-IN" aria-pressed="false">Marathi model</button>
     </div>
-    <div class="seg" id="calibSeg" role="group" aria-label="Calibration">
-      <button data-v="on" aria-pressed="false">Calibrate</button>
-      <button data-v="clear" aria-pressed="false">Reset timing</button>
+    <div class="field"><span>Highlight</span>
+    <div class="seg" id="styleSeg" role="group" aria-label="Highlight style">
+      <button data-v="glow" aria-pressed="true">Glow</button>
+      <button data-v="bar" aria-pressed="false">Underline</button>
+      <button data-v="pill" aria-pressed="false">Pill</button>
     </div>
+    </div>
+    <div class="field"><span>Move by</span>
     <div class="seg" id="unitSeg" role="group" aria-label="Step by">
       <button data-v="word" aria-pressed="true">Word</button>
       <button data-v="phrase" aria-pressed="false">Phrase</button>
     </div>
+    </div>
+    <div class="field"><span>Timing</span>
+    <div class="seg" id="calibSeg" role="group" aria-label="Calibration">
+      <button data-v="on" aria-pressed="false">Calibrate</button>
+      <button data-v="clear" aria-pressed="false">Reset timing</button>
+    </div>
+    </div>
+    <div class="field" id="langField"><span>Voice model</span>
+    <div class="seg" id="langSeg" role="group" aria-label="Recognition language">
+      <button data-v="hi-IN" aria-pressed="true">Hindi model</button>
+      <button data-v="mr-IN" aria-pressed="false">Marathi model</button>
+    </div>
+    </div>
+    <button id="sheetDone">Done</button>
   </div>
-</footer>
+</div>
 <div id="readbar">
   <button id="rSmall" aria-label="Smaller text">A−</button>
   <span class="sz" id="rSize">100%</span>
@@ -288,8 +325,9 @@ function render(scroll=true){
   $("verseNo").textContent=`॥ ${devNum(v+1)} ॥`;
   $("progress").innerHTML=DATA.map((_,i)=>`<i class="${i<v?"done":i===v?"now":""}"></i>`).join("");
   if(scroll && performance.now()-userScrollTs>4000){const el=document.querySelector(".w.now"); if(el) el.scrollIntoView({block:"center",behavior:"smooth"});}
-  $("hint").textContent = v===DATA.length-1 && p===DATA[v].length-1 && (unit==="phrase"||w===DATA[v][p].length-1)
-    ? "End of the hymn" : "Scroll freely · tap any word to jump there";
+  const atEnd = v===DATA.length-1 && p===DATA[v].length-1 && (unit==="phrase"||w===DATA[v][p].length-1);
+  document.body.dataset.end = atEnd ? "1" : "0";
+  $("hint").textContent = atEnd ? "End of the hymn" : "Scroll freely · tap any word to jump there";
 }
 function step(dir){
   if(unit==="word"){
@@ -339,7 +377,8 @@ $("nextBtn").onclick=()=>{ if(calib) calibTap(); step(1); };
 /* manual scrolling pauses auto-follow for 4 s so play never fights the thumb */
 ["touchstart","wheel","pointerdown"].forEach(ev=>$("main").addEventListener(ev,()=>{userScrollTs=performance.now()},{passive:true}));
 $("prevBtn").onclick=()=>step(-1);
-$("resetBtn").onclick=()=>{ stop(); if(listening) stopMic(); v=0;p=0;w=0; render(); $("main").scrollTo({top:0,behavior:"smooth"}); };
+$("resetBtn").onclick=()=>{ /* position only: speed, script, style and timing are left untouched */
+  stop(); if(listening) stopMic(); v=0;p=0;w=0; renderedKey=""; render(); $("main").scrollTo({top:0,behavior:"smooth"}); };
 $("prevBtn").addEventListener("click",()=>{ if(listening) resetHeard(); });
 $("nextBtn").addEventListener("click",()=>{ if(listening) resetHeard(); });
 $("playBtn").onclick=()=>playing?stop():play();
@@ -502,6 +541,13 @@ $("calibSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
   else { saveCalib(); heard.textContent=CALIB?`Saved timing for ${Object.keys(CALIB).length} words`:""; }
 });
 seg("langSeg",val=>{recLang=val; if(listening){ stopMic(); setTimeout(startMic,350); }});
+/* ---------- Settings sheet ---------- */
+function openSheet(){ $("sheet").classList.add("open"); }
+function closeSheet(){ $("sheet").classList.remove("open"); }
+$("settingsBtn").onclick=openSheet;
+$("sheetDone").onclick=closeSheet;
+$("sheet").addEventListener("click",e=>{ if(e.target.id==="sheet") closeSheet(); });
+
 /* ---------- Read mode ---------- */
 let reading=false, rSize=110, rUiTimer=null;
 try{const z=+localStorage.getItem("as_rsize"); if(z>=70&&z<=220) rSize=z;}catch(_){}
@@ -547,9 +593,10 @@ document.addEventListener("keydown",e=>{
   if(k===" "){e.preventDefault(); playing?stop():play();}
   else if(k==="ArrowRight"){step(1)} else if(k==="ArrowLeft"){step(-1)}
   else if(k.toLowerCase()==="r"){$("resetBtn").click()}
-  else if(k.toLowerCase()==="m"){$("micBtn").click()}
+  else if(k.toLowerCase()==="m"){ if(document.body.dataset.mic!=="off") $("micBtn").click(); }
   else if(k.toLowerCase()==="f"){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); }
   else if(k.toLowerCase()==="t"){ setTV(document.body.dataset.tv!=="1"); }
+  else if(k==="Escape"&&$("sheet").classList.contains("open")){ closeSheet(); }
   else if(k==="Escape"&&reading){ setRead(false); }
   else if(k==="Escape"&&document.body.dataset.tv==="1"){ setTV(false); }
   if(document.body.dataset.tv==="1") showUI();
