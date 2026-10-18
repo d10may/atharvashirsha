@@ -1,0 +1,615 @@
+﻿<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mata Gayatri Aarti · Recitation walkthrough</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Mukta:wght@300;400;500&display=swap">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#16121F;
+  --bg-2:#1F1A2B;
+  --ink:#EFE3C6;
+  --ink-dim:#5E5670;
+  --ink-done:#A99E86;
+  --kesari:#F28C28;
+  --gold:#D9A441;
+  --line:#2C2538;
+  --sanskrit:"Tiro Devanagari Sanskrit","Noto Serif Devanagari","Mangal",serif;
+  --ui:"Mukta","Noto Sans Devanagari",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#F6EBD6;--bg-2:#EEDFC3;--ink:#2A1F1A;--ink-dim:#B9AA90;--ink-done:#6F624F;
+    --kesari:#C8590E;--gold:#8E6A1B;--line:#DCCBAA;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F6EBD6;--bg-2:#EEDFC3;--ink:#2A1F1A;--ink-dim:#B9AA90;--ink-done:#6F624F;
+  --kesari:#C8590E;--gold:#8E6A1B;--line:#DCCBAA;
+}
+:root[data-theme="dark"]{
+  --bg:#16121F;--bg-2:#1F1A2B;--ink:#EFE3C6;--ink-dim:#5E5670;--ink-done:#A99E86;
+  --kesari:#F28C28;--gold:#D9A441;--line:#2C2538;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--ui);display:flex;flex-direction:column;overflow:hidden}
+*{box-sizing:inherit}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px;gap:8px;flex-wrap:wrap}
+.verse-no{font-family:var(--sanskrit);font-size:1.4rem;color:var(--gold);line-height:1}
+.progress{display:flex;gap:5px;flex:1;justify-content:center}
+.progress i{width:6px;height:6px;border-radius:50%;background:var(--ink-dim);opacity:.5}
+.progress i.done{background:var(--gold);opacity:.8}
+.progress i.now{background:var(--kesari);opacity:1;transform:scale(1.4)}
+.icon-btn{background:none;border:2px solid var(--line);color:var(--ink);min-width:48px;height:48px;padding:0 14px;border-radius:14px;font-size:1rem;font-family:var(--ui);cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.icon-btn:focus-visible,button:focus-visible{outline:2px solid var(--kesari);outline-offset:2px}
+
+main{flex:1;overflow-y:auto;padding:12px 22px 40px;-webkit-overflow-scrolling:touch}
+.text{font-family:var(--sanskrit);font-size:clamp(1.55rem,6.2vw,2.4rem);line-height:1.9;text-align:center;max-width:36ch;margin:0 auto}
+.w{display:inline-block;padding:0 .12em;border-radius:.3em;color:var(--ink-dim);cursor:pointer;transition:color .18s,background .18s,transform .18s,box-shadow .18s;position:relative}
+.w.done{color:var(--ink-done)}
+.w.now{color:var(--kesari)}
+.danda{color:var(--ink-dim);margin:0 .15em}
+body[data-script="rom"] .text{font-size:clamp(1.25rem,5vw,1.9rem);letter-spacing:.01em}
+body[data-script="both"] .text{line-height:1.25}
+body[data-script="both"] .w{vertical-align:top;margin:.35em 0}
+body[data-script="both"] .w b{display:block;font-weight:inherit}
+body[data-script="both"] .w small{display:block;font-size:.5em;line-height:1.3;opacity:.75;font-family:var(--sanskrit)}
+body[data-script="both"] .danda{vertical-align:top;margin-top:.1em;display:inline-block}
+
+/* Style A: kesari glow + lift */
+body[data-style="glow"] .w.now{font-weight:700;transform:translateY(-.06em) scale(1.08);text-shadow:0 0 18px color-mix(in srgb,var(--kesari) 55%,transparent)}
+/* Style B: gold underline bar */
+body[data-style="bar"] .w.now{color:var(--ink);font-weight:700}
+body[data-style="bar"] .w.now::after{content:"";position:absolute;left:.1em;right:.1em;bottom:.05em;height:.14em;background:var(--kesari);border-radius:2px}
+/* Style C: filled pill */
+body[data-style="pill"] .w.now{color:var(--bg);background:var(--kesari);font-weight:600}
+
+.prev-next{opacity:.45;font-size:.8rem;text-align:center;margin-top:28px;color:var(--ink-done);font-family:var(--ui)}
+.ctx{font-family:var(--sanskrit);font-size:clamp(1.05rem,4vw,1.5rem);line-height:1.8;text-align:center;max-width:36ch;margin:0 auto;color:var(--ink-dim);opacity:.55;cursor:pointer}
+.ctx .n{display:block;font-size:.85em;color:var(--gold);opacity:.8;margin-bottom:4px}
+.ctx.prev{margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.ctx.next{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.ctx.hidden{display:none}
+.verse{padding:18px 0;border-bottom:1px solid var(--line)}
+.verse:last-child{border-bottom:0}
+.verse .n{display:block;text-align:center;font-family:var(--sanskrit);color:var(--gold);opacity:.8;margin-bottom:6px}
+.verse .ctx{margin:0}
+.verse.cur .n{opacity:1}
+/* mic feature hidden from the UI (data-mic="off"); logic left intact below */
+body[data-mic="off"] #micBtn,body[data-mic="off"] #langField{display:none}
+.ctrl.mic{position:relative}
+.ctrl.mic.on{border-color:var(--kesari);color:var(--kesari)}
+.ctrl.mic.on.lost{border-color:var(--ink-done);color:var(--ink-done)}
+.ctrl.mic.on.lost::after{border-color:var(--ink-done);animation-duration:2.6s}
+.ctrl.mic.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--kesari);animation:pulse 1.4s ease-out infinite}
+@keyframes pulse{from{transform:scale(.9);opacity:.9}to{transform:scale(1.35);opacity:0}}
+.heard{font-family:var(--sanskrit);font-size:.95rem;color:var(--ink-done);text-align:center;min-height:1.4em;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl}
+.heard span{direction:ltr;unicode-bidi:embed}
+.heard.err{color:var(--kesari);font-family:var(--ui)}
+@media (prefers-reduced-motion: reduce){.ctrl.mic.on::after{animation:none}}
+
+footer{border-top:1px solid var(--line);background:var(--bg-2);padding:10px 18px 12px}
+.controls{display:flex;align-items:center;justify-content:center;gap:12px}
+.ctrl{background:none;border:2px solid var(--line);color:var(--ink);border-radius:50%;width:60px;height:60px;font-size:1.4rem;cursor:pointer}
+#resetBtn{height:60px;padding:0 20px;border:2px solid var(--line);border-radius:14px;background:none;
+  color:var(--ink);font-family:var(--ui);font-size:1.1rem;cursor:pointer;white-space:nowrap}
+/* at the end of the hymn Play has nothing left to do: offer the loop where the thumb already is */
+body[data-end="1"] #playBtn,body[data-end="1"] #prevBtn,body[data-end="1"] #nextBtn{display:none}
+body[data-end="1"] #resetBtn{background:var(--kesari);border-color:var(--kesari);color:var(--bg);
+  height:76px;font-size:1.35rem;font-weight:500;padding:0 34px}
+.ctrl.play{width:76px;height:76px;background:var(--kesari);border-color:var(--kesari);color:#16121F;font-size:1.8rem}
+.row{display:flex;align-items:center;gap:12px;margin-top:12px;font-size:1rem;color:var(--ink-done)}
+.row input[type=range]{height:34px}
+.row label{white-space:nowrap}
+.row input[type=range]{flex:1;accent-color:var(--kesari)}
+.seg{display:flex;border:2px solid var(--line);border-radius:999px;overflow:hidden;font-size:1rem}
+.seg button{background:none;border:0;color:var(--ink-done);padding:12px 16px;cursor:pointer;font-family:var(--ui);font-size:1rem}
+.seg button[aria-pressed="true"]{background:var(--line);color:var(--ink)}
+.opts{display:flex;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
+/* settings live in a sheet so the everyday controls stay uncluttered */
+#sheet{position:fixed;inset:0;z-index:20;display:none;background:rgba(0,0,0,.55)}
+#sheet.open{display:block}
+#sheetPanel{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;background:var(--bg-2);
+  border-top:2px solid var(--line);border-radius:22px 22px 0 0;
+  padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+#sheetPanel h3{margin:0 0 18px;font-family:var(--ui);font-size:1.35rem;font-weight:500;color:var(--ink)}
+.field{margin-bottom:22px}
+.field > span{display:block;font-size:1.05rem;color:var(--ink-done);margin-bottom:9px}
+.field .seg{width:100%}
+.field .seg button{flex:1;padding:14px 8px}
+#sheetDone{width:100%;height:60px;border:0;border-radius:14px;background:var(--kesari);color:var(--bg);
+  font-family:var(--ui);font-size:1.25rem;font-weight:500;cursor:pointer;margin-top:4px}
+#settingsBtn{margin-top:12px;width:100%;height:52px;background:none;border:2px solid var(--line);
+  border-radius:14px;color:var(--ink-done);font-family:var(--ui);font-size:1.05rem;cursor:pointer}
+@media (prefers-reduced-motion: reduce){.w{transition:none}body[data-style="glow"] .w.now{transform:none}}
+
+/* ---------- Read mode: plain continuous text ---------- */
+body[data-read="1"] header,body[data-read="1"] footer,body[data-read="1"] .prev-next{display:none}
+body[data-read="1"] main{padding:4vh 6vw 20vh;scroll-behavior:smooth}
+#reader{max-width:30em;margin:0 auto;font-family:var(--sanskrit);font-size:var(--rsize,2rem);line-height:2.25;color:var(--ink);text-align:left}
+#reader .rv{margin:0 0 1.5em}
+#reader .rn{display:block;font-size:.85em;color:var(--gold);text-align:center;margin-bottom:.4em}
+#reader .rd{color:var(--ink-dim);margin:0 .12em}
+#reader .rr{display:block;font-size:.62em;line-height:1.75;color:var(--ink-done);opacity:.85;margin-top:.5em}
+#readbar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:var(--bg-2);border-top:2px solid var(--line);z-index:5}
+#readbar button{background:none;border:2px solid var(--line);color:var(--ink);border-radius:14px;
+  min-width:72px;height:60px;padding:0 18px;font-size:1.3rem;font-weight:500;cursor:pointer;font-family:var(--ui)}
+#readbar #rExit{background:var(--kesari);border-color:var(--kesari);color:var(--bg);min-width:108px}
+#readbar .sz{font-variant-numeric:tabular-nums;color:var(--ink-done);font-size:1.05rem;min-width:3.6em;text-align:center}
+body[data-read="1"] #readbar{display:flex}
+#readbar{display:none}
+
+/* ---------- TV / projector mode ---------- */
+body[data-tv="1"]{cursor:none}
+body[data-tv="1"] header{padding:2vh 4vw 1vh}
+body[data-tv="1"] .verse-no{font-size:3.2vh}
+body[data-tv="1"] .progress i{width:1.1vh;height:1.1vh}
+body[data-tv="1"] main{padding:2vh 6vw 30vh}
+body[data-tv="1"] .text{font-size:clamp(2.6rem,7.2vh,6rem);line-height:1.75;max-width:88vw}
+body[data-tv="1"][data-script="rom"] .text{font-size:clamp(2.2rem,6vh,5rem)}
+body[data-tv="1"][data-script="both"] .text{line-height:1.2}
+body[data-tv="1"] .ctx{font-size:clamp(1.3rem,3.4vh,2.6rem);max-width:80vw;opacity:.42}
+body[data-tv="1"] .verse{padding:3vh 0}
+body[data-tv="1"] .w{padding:0 .1em}
+body[data-tv="1"][data-style="glow"] .w.now{text-shadow:0 0 .35em color-mix(in srgb,var(--kesari) 65%,transparent),0 0 1em color-mix(in srgb,var(--kesari) 30%,transparent)}
+body[data-tv="1"] .w.done{color:color-mix(in srgb,var(--ink) 70%,var(--ink-done))}
+body[data-tv="1"] .w{color:color-mix(in srgb,var(--ink-dim) 75%,var(--ink))}
+body[data-tv="1"] .prev-next{display:none}
+/* controls collapse to a thin strip; slide up on hover / touch / any key */
+body[data-tv="1"] footer{position:fixed;left:0;right:0;bottom:0;transform:translateY(calc(100% - 6px));transition:transform .25s;opacity:.95}
+body[data-tv="1"] footer::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:var(--line)}
+body[data-tv="1"].show-ui footer{transform:none}
+body[data-tv="1"].show-ui{cursor:default}
+body[data-tv="1"] .ctrl{width:8vh;height:8vh;font-size:3vh}
+body[data-tv="1"] .ctrl.play{width:10vh;height:10vh;font-size:4vh}
+body[data-tv="1"] .heard{font-size:2.6vh}
+body[data-tv="1"] .seg,body[data-tv="1"] .row{font-size:1.9vh}
+.kbd{opacity:.5;font-size:.75rem;text-align:center;margin-top:8px;font-family:var(--ui);display:none}
+body[data-tv="1"] .kbd{display:block}
+</style>
+</head>
+<body data-style="glow" data-script="dev" data-mic="off">
+<header>
+  <a href="index.html" class="icon-btn" title="Back to Home" aria-label="Back to Home">‹ Home</a>
+  <div class="verse-no" id="verseNo">॥ १ ॥</div>
+  <div class="progress" id="progress"></div>
+  <button class="icon-btn" id="readBtn" title="Read mode" aria-label="Read mode">Read</button>
+  <button class="icon-btn" id="tvBtn" title="TV / projector mode" aria-label="TV mode">TV</button>
+  <button class="icon-btn" id="themeBtn" title="Day / night" aria-label="Toggle day or night">☾</button>
+</header>
+
+<main id="main">
+  <div id="all"></div>
+  <div id="reader" hidden></div>
+  <div class="prev-next" id="hint">Scroll freely · tap any word to jump there</div>
+</main>
+
+<footer>
+  <div class="controls">
+    <button class="ctrl" id="prevBtn" aria-label="Previous">‹</button>
+    <button class="ctrl play" id="playBtn" aria-label="Play">▶</button>
+    <button class="ctrl" id="nextBtn" aria-label="Next">›</button>
+    <button id="resetBtn">Start again</button>
+    <button class="ctrl mic" id="micBtn" aria-label="Listen and follow">🎙</button>
+  </div>
+  <div class="heard" id="heard" role="status" aria-live="polite"></div>
+  <div class="kbd">Space play/pause · ← → step · R restart · F fullscreen · Esc exit TV</div>
+  <div class="row">
+    <label for="pace">Speed</label>
+    <input type="range" id="pace" min="0.5" max="5" step="0.25" value="1">
+    <span id="paceVal">1×</span>
+  </div>
+  <button id="settingsBtn">Settings</button>
+</footer>
+<div id="sheet" role="dialog" aria-modal="true" aria-label="Settings">
+  <div id="sheetPanel">
+    <h3>Settings</h3>
+    <div class="field"><span>Script</span>
+    <div class="seg" id="scriptSeg" role="group" aria-label="Script">
+      <button data-v="dev" aria-pressed="true">देवनागरी</button>
+      <button data-v="rom" aria-pressed="false">Roman</button>
+      <button data-v="both" aria-pressed="false">Both</button>
+    </div>
+    </div>
+    <div class="field"><span>Highlight</span>
+    <div class="seg" id="styleSeg" role="group" aria-label="Highlight style">
+      <button data-v="glow" aria-pressed="true">Glow</button>
+      <button data-v="bar" aria-pressed="false">Underline</button>
+      <button data-v="pill" aria-pressed="false">Pill</button>
+    </div>
+    </div>
+    <div class="field"><span>Move by</span>
+    <div class="seg" id="unitSeg" role="group" aria-label="Step by">
+      <button data-v="word" aria-pressed="true">Word</button>
+      <button data-v="phrase" aria-pressed="false">Phrase</button>
+    </div>
+    </div>
+    <div class="field"><span>Timing</span>
+    <div class="seg" id="calibSeg" role="group" aria-label="Calibration">
+      <button data-v="on" aria-pressed="false">Calibrate</button>
+      <button data-v="clear" aria-pressed="false">Reset timing</button>
+    </div>
+    </div>
+    <div class="field" id="langField"><span>Voice model</span>
+    <div class="seg" id="langSeg" role="group" aria-label="Recognition language">
+      <button data-v="hi-IN" aria-pressed="true">Hindi model</button>
+      <button data-v="mr-IN" aria-pressed="false">Marathi model</button>
+    </div>
+    </div>
+    <button id="sheetDone">Done</button>
+  </div>
+</div>
+<div id="readbar">
+  <button id="rSmall" aria-label="Smaller text">A−</button>
+  <span class="sz" id="rSize">100%</span>
+  <button id="rBig" aria-label="Larger text">A+</button>
+  <button id="rExit" aria-label="Exit read mode">Done</button>
+</div>
+
+<script>
+const VERSES = [
+"जयति जय गायत्री माता जयति जय गायत्री माता । सत् मारग पर हमें चलाओ जो है सुखदाता ॥",
+"आदि शक्ति तुम अलख निरंजन जगपालक कर्त्री । दुःख शोक भय क्लेश कलश दारिद्र दैन्य हर्त्री । जयति जय गायत्री माता ॥",
+"ब्रह्म रूपिणी प्रणत पालिनी जगत धातृ अम्बे । भव भयहारी जन-हितकारी सुखदा जगदम्बे । जयति जय गायत्री माता ॥",
+"भय हारिणी भवतारिणी अनघे अज आनन्द राशि । अविकारी अखहरी अविचलित अमले अविनाशी । जयति जय गायत्री माता ॥",
+"कामधेनु सतचित आनन्द जय गंगा गीता । सविता की शाश्वती शक्ति तुम सावित्री सीता । जयति जय गायत्री माता ॥",
+"ऋग यजु साम अथर्व प्रणयनी प्रणव महामहिमे । कुण्डलिनी सहस्त्र सुषुमन शोभा गुण गरिमे । जयति जय गायत्री माता ॥",
+"स्वाहा स्वधा शची ब्रह्माणी राधा रुद्राणी । जय सतरूपा वाणी विद्या कमला कल्याणी । जयति जय गायत्री माता ॥",
+"जननी हम हैं दीन-हीन दुःख-दरिद्र के घेरे । यदपि कुटिल कपटी कपूत तउ बालक हैं तेरे । जयति जय गायत्री माता ॥",
+"स्नेहसनी करुणामय माता चरण शरण दीजै । विलख रहे हम शिशु सुत तेरे दया दृष्टि कीजै । जयति जय गायत्री माता ॥",
+"काम क्रोध मद लोभ दम्भ दुर्भाव द्वेष हरिये । शुद्ध बुद्धि निष्पाप हृदय मन को पवित्र करिये । जयति जय गायत्री माता ॥",
+"जयति जय गायत्री माता जयति जय गायत्री माता । सत् मारग पर हमें चलाओ जो है सुखदाता ॥"
+];
+const ROMAN = [
+"jayati jaya gāyatrī mātā jayati jaya gāyatrī mātā । sat māraga para hameṁ calāo jo hai sukhadātā ॥",
+"ādi śakti tum alakha nirañjana jagapālaka kartrī । duḥkha śoka bhaya kleśa kalaśa dāridra dainya hartrī । jayati jaya gāyatrī mātā ॥",
+"brahma rūpiṇī praṇata pālinī jagata dhātṛ ambe । bhava bhayahārī jana-hitakārī sukhadā jagadambe । jayati jaya gāyatrī mātā ॥",
+"bhaya hāriṇī bhavatāriṇī anaghe aja ānanda rāśi । avikārī akhaharī avicalita amale avināśī । jayati jaya gāyatrī mātā ॥",
+"kāmadhenu satacita ānanda jaya gaṅgā gītā । savitā kī śāśvatī śakti tum sāvitrī sītā । jayati jaya gāyatrī mātā ॥",
+"ṛga yaju sāma atharva praṇayanī praṇava mahāmahime । kuṇḍalinī sahastra suṣumana śobhā guṇa garime । jayati jaya gāyatrī mātā ॥",
+"svāhā svadhā śacī brahmāṇī rādhā rudrāṇī । jaya satarūpā vāṇī vidyā kamalā kalyāṇī । jayati jaya gāyatrī mātā ॥",
+"jananī hama haiṁ dīna-hīna duḥkha-daridra ke ghere । yadapi kuṭila kapaṭī kapūta tau bālaka haiṁ tere । jayati jaya gāyatrī mātā ॥",
+"snehasanī karuṇāmaya mātā caraṇa śaraṇa dījai । vilakha rahe hama śiśu suta tere dayā dṛṣṭi kījai । jayati jaya gāyatrī mātā ॥",
+"kāma krodha mada lobha dambha durbhāva dveṣa hariye । śuddha buddhi niṣpāpa hṛdaya mana ko pavitra kariye । jayati jaya gāyatrī mātā ॥",
+"jayati jaya gāyatrī mātā jayati jaya gāyatrī mātā । sat māraga para hameṁ calāo jo hai sukhadātā ॥"
+];
+const DEV = ["०","१","२","३","४","५","६","७","८","९"];
+const devNum = n => String(n).split("").map(d=>DEV[+d]).join("");
+
+// Build units: each verse -> array of phrases -> array of words
+const split = v => v.replace(/॥$/,"").split("।").map(p=>p.trim()).filter(Boolean).map(p=>p.split(/\s+/));
+const DATA = VERSES.map(split), RDATA = ROMAN.map(split);
+let script="dev";
+
+let v=0, p=0, w=0, unit="word", playing=false, timer=null, userScrollTs=-1e9;
+const $=id=>document.getElementById(id);
+
+function verseHTML(vi){
+  const verse=DATA[vi]; const html=[];
+  verse.forEach((phrase,pi)=>{
+    phrase.forEach((word,wi)=>{
+      let cls="w";
+      const isNow = unit==="word" ? (pi===p&&wi===w) : pi===p;
+      const isDone = pi<p || (unit==="word" && pi===p && wi<w);
+      if(isNow) cls+=" now"; else if(isDone) cls+=" done";
+      const rw=RDATA[vi][pi][wi]||"";
+      const inner = script==="dev"?word: script==="rom"?rw: `<b>${word}</b><small>${rw}</small>`;
+      html.push(`<span class="${cls}" data-v="${vi}" data-p="${pi}" data-w="${wi}">${inner}</span>`);
+    });
+    html.push(`<span class="danda">${pi===verse.length-1?"॥":"।"}</span>`);
+  });
+  return html.join(" ");
+}
+let renderedKey="";
+function render(scroll=true){
+  const key=`${v}|${unit}|${script}`;
+  if(key===renderedKey){
+    // same verse: update classes in place so the DOM under the finger is never replaced
+    document.querySelectorAll("#all .w").forEach(el=>{
+      const pi=+el.dataset.p, wi=+el.dataset.w;
+      const isNow = unit==="word" ? (pi===p&&wi===w) : pi===p;
+      const isDone = pi<p || (unit==="word" && pi===p && wi<w);
+      el.classList.toggle("now",isNow); el.classList.toggle("done",!isNow&&isDone);
+    });
+  } else {
+  renderedKey=key;
+  $("all").innerHTML=DATA.map((_,i)=>{
+    const body = i===v ? `<div class="text">${verseHTML(i)}</div>`
+                       : `<div class="ctx" data-jump="${i}">${script==="rom"?ROMAN[i]:VERSES[i]}</div>`;
+    return `<section class="verse${i===v?" cur":""}" id="verse-${i}"><span class="n">॥ ${devNum(i+1)} ॥</span>${body}</section>`;
+  }).join("");
+  }
+  $("verseNo").textContent=`॥ ${devNum(v+1)} ॥`;
+  $("progress").innerHTML=DATA.map((_,i)=>`<i class="${i<v?"done":i===v?"now":""}"></i>`).join("");
+  if(scroll && performance.now()-userScrollTs>4000){const el=document.querySelector(".w.now"); if(el) el.scrollIntoView({block:"center",behavior:"smooth"});}
+  const atEnd = v===DATA.length-1 && p===DATA[v].length-1 && (unit==="phrase"||w===DATA[v][p].length-1);
+  document.body.dataset.end = atEnd ? "1" : "0";
+  $("hint").textContent = atEnd ? "End of the hymn" : "Scroll freely · tap any word to jump there";
+}
+function step(dir){
+  if(unit==="word"){
+    w+=dir;
+    if(w>=DATA[v][p].length){w=0;p++} else if(w<0){p--; if(p>=0) w=DATA[v][p].length-1}
+  } else { p+=dir; w=0; }
+  if(p>=DATA[v].length){ if(v<DATA.length-1){v++;p=0;w=0} else {p=DATA[v].length-1; w=unit==="word"?DATA[v][p].length-1:0; stop()} }
+  else if(p<0){ if(v>0){v--;p=DATA[v].length-1; w=unit==="word"?DATA[v][p].length-1:0} else {p=0;w=0} }
+  render();
+}
+/* mātrā (metrical beat) count of a Devanagari word: laghu=1, guru=2 */
+function matras(w){
+  w=w.replace(/ॐ/g,"ओम्"); const LONG="आईऊएऐओऔ";
+  const isC=c=>c>="क"&&c<="ह"; let n=0;
+  for(let i=0;i<w.length;i++){
+    const c=w[i], nx=w[i+1]||"", nx2=w[i+2]||"";
+    let syl=false, guru=false;
+    if(c>="अ"&&c<="औ"){syl=true; guru=LONG.includes(c);}
+    else if(isC(c)&&nx!=="्"){syl=true; if(nx&&"ाीूेैोौ".includes(nx)) guru=true;}
+    if(!syl) continue;
+    // look past matra for anusvara/visarga/conjunct
+    let j=i+1; if(w[j]&&"ािीुूेैोौ".includes(w[j])) j++;
+    if(w[j]==="ं"||w[j]==="ः"||w[j]==="ँ") guru=true;
+    if(isC(w[j])&&w[j+1]==="्") guru=true;
+    n+=guru?2:1;
+  }
+  return Math.max(n,1);
+}
+const MATRA_MS=125, DANDA_MS=450, VERSE_MS=1200;   // group recordings: ~5 syl/s; breath at danda / verse end
+let CALIB=null; try{CALIB=JSON.parse(localStorage.getItem("as_calib")||"null")}catch(_){}
+const breath=()=>{ const lastW = unit==="phrase" || w===DATA[v][p].length-1; if(!lastW) return 0; return p===DATA[v].length-1 ? VERSE_MS : DANDA_MS; };
+function wordMs(){
+  const key=`${v}.${p}.${w}`;
+  if(CALIB&&CALIB[key]) return CALIB[key]/+$("pace").value;
+  return (matras(DATA[v][p][w])*MATRA_MS+breath())/+$("pace").value;
+}
+const interval=()=> unit==="phrase" ? (DATA[v][p].reduce((a,x)=>a+matras(x),0)*MATRA_MS+breath())/+$("pace").value : wordMs();
+function tick(){ step(1); if(playing) timer=setTimeout(tick, interval()); }
+/* calibration: tap Next in time with the chant; gaps are stored per word */
+let calib=false, lastTap=0;
+function calibTap(){ const now=performance.now(); if(lastTap){ const key=`${v}.${p}.${w}`; CALIB=CALIB||{}; CALIB[key]=Math.min(4000,Math.max(120,now-lastTap)); } lastTap=now; }
+function saveCalib(){ try{localStorage.setItem("as_calib",JSON.stringify(CALIB))}catch(_){} }
+function stop(){ playing=false; clearTimeout(timer); $("playBtn").textContent="▶"; $("playBtn").setAttribute("aria-label","Play"); }
+function play(){ if(listening) stopMic(); playing=true; $("playBtn").textContent="❙❙"; $("playBtn").setAttribute("aria-label","Pause"); timer=setTimeout(tick,interval()); }
+
+$("nextBtn").onclick=()=>{ if(calib) calibTap(); step(1); };
+/* manual scrolling pauses auto-follow for 4 s so play never fights the thumb */
+["touchstart","wheel","pointerdown"].forEach(ev=>$("main").addEventListener(ev,()=>{userScrollTs=performance.now()},{passive:true}));
+$("prevBtn").onclick=()=>step(-1);
+$("resetBtn").onclick=()=>{ /* position only: speed, script, style and timing are left untouched */
+  stop(); if(listening) stopMic(); v=0;p=0;w=0; renderedKey=""; render(); $("main").scrollTo({top:0,behavior:"smooth"}); };
+$("prevBtn").addEventListener("click",()=>{ if(listening) resetHeard(); });
+$("nextBtn").addEventListener("click",()=>{ if(listening) resetHeard(); });
+$("playBtn").onclick=()=>playing?stop():play();
+$("pace").oninput=e=>{$("paceVal").textContent=(+e.target.value)+"×"; try{localStorage.setItem("as_speed",e.target.value)}catch(_){}};
+try{const sp=localStorage.getItem("as_speed"); if(sp){$("pace").value=sp; $("paceVal").textContent=(+sp)+"×"}}catch(_){}
+$("all").onclick=e=>{
+  const j=e.target.closest(".ctx"); if(j){v=+j.dataset.jump;p=0;w=0;render(); if(typeof resetHeard==="function") resetHeard(); return;}
+  const t=e.target.closest(".w"); if(!t) return; v=+t.dataset.v; p=+t.dataset.p; w=unit==="word"?+t.dataset.w:0; render(false); if(typeof resetHeard==="function") resetHeard();};
+function seg(id,cb){ $(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{ $(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); cb(b.dataset.v); }); }
+seg("styleSeg",val=>{document.body.dataset.style=val; try{localStorage.setItem("as_style",val)}catch(e){}});
+seg("unitSeg",val=>{unit=val; w=0; render();});
+seg("scriptSeg",val=>{script=val; document.body.dataset.script=val; renderedKey=""; render(); if(document.body.dataset.read==="1") buildReader(); try{localStorage.setItem("as_script",val)}catch(e){}});
+
+/* ---------- Mic follow ---------- */
+let rec=null, listening=false, recLang="hi-IN", finalText="", wakeLock=null;
+let restartDelay=250, lastFollow=0, lostSince=0, tracking=false, startingMic=false;
+const heard=$("heard");
+
+/* --- normalisation: identical treatment for hymn text and transcript --- */
+function norm(t){
+  return t.normalize("NFC")
+    .replace(/\u0950/g,"\u0913\u092E\u094D")          // ॐ -> ओम्  (before virama strip)
+    .replace(/[\u0901]/g,"\u0902")                     // chandrabindu -> anusvara
+    .replace(/[\u200C\u200D\u093C\u093D\u0964\u0965\u0970]/g,"")  // ZWNJ/ZWJ/nukta/avagraha/dandas
+    .replace(/[^\u0900-\u097F]/g,"")                   // drop latin punctuation, digits, spaces
+    .replace(/\u094D/g,"");                            // virama everywhere, both sides
+}
+/* phonetic skeleton: fold the distinctions Hindi/Marathi models confuse in Sanskrit */
+const FOLD={"\u0936":"\u0938","\u0937":"\u0938","\u0938":"\u0938",       // श ष स
+  "\u092C":"\u0935","\u0935":"\u0935",                                   // ब व
+  "\u0923":"\u0928","\u0928":"\u0928","\u0919":"\u0928","\u091E":"\u0928", // ण न ङ ञ
+  "\u0916":"\u0915","\u0915":"\u0915","\u0918":"\u0917","\u0917":"\u0917",
+  "\u091B":"\u091A","\u091A":"\u091A","\u091D":"\u091C","\u091C":"\u091C",
+  "\u0920":"\u091F","\u091F":"\u091F","\u0922":"\u0921","\u0921":"\u0921",
+  "\u0925":"\u0924","\u0924":"\u0924","\u0927":"\u0926","\u0926":"\u0926",
+  "\u092B":"\u092A","\u092A":"\u092A","\u092D":"\u092C","\u0933":"\u0932",
+  "\u0940":"\u093F","\u093F":"\u093F","\u0942":"\u0941","\u0941":"\u0941",
+  "\u0906":"\u0905","\u0905":"\u0905","\u0908":"\u0907","\u0907":"\u0907",
+  "\u090A":"\u0909","\u0909":"\u0909","\u0903":"","\u0902":"\u092E"};
+const skel=t=>[...norm(t)].map(c=>FOLD[c]!==undefined?FOLD[c]:c).join("");
+
+function lev(a,b){const m=a.length,n=b.length; if(!m||!n) return Math.max(m,n); let prev=[...Array(n+1).keys()],cur=[];
+  for(let i=1;i<=m;i++){cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur;} return prev[n];}
+const sim=(a,b)=>1-lev(a,b)/Math.max(a.length,b.length,1);
+/* best similarity allowing the tail to end up to `slack` chars early or late */
+function simSlack(target,tail,slack){
+  let best=0;
+  for(let off=0;off<=slack;off++){
+    const endCut = off===0 ? tail : tail.slice(0,-off);
+    if(endCut.length<2) break;
+    best=Math.max(best,sim(target,endCut.slice(-target.length)));
+  }
+  return best;
+}
+
+/* flat index of every word, with phonetic skeletons precomputed */
+const FLAT=[]; DATA.forEach((verse,vi)=>verse.forEach((ph,pi)=>ph.forEach((wd,wi)=>FLAT.push({v:vi,p:pi,w:wi,t:skel(wd)}))));
+const flatPos=()=>FLAT.findIndex(x=>x.v===v&&x.p===p&&x.w===w);
+
+/* --- tuning knobs, all in one place --- */
+const MIC={ back:6, fwd:12, span:3, tail:48, slack:3,
+            baseScore:0.60, perStep:0.012, maxScore:0.88, minInterval:220, lostAfter:6000 };
+
+function setStatus(txt,err){ heard.className="heard"+(err?" err":""); heard.textContent=txt; }
+function setTracking(on){ if(tracking===on) return; tracking=on; $("micBtn").classList.toggle("lost",!on); }
+
+function follow(transcript){
+  const now=performance.now();
+  if(now-lastFollow<MIC.minInterval) return;          // debounce: at most ~4.5 checks/s
+  lastFollow=now;
+  const tail=skel(transcript).slice(-MIC.tail); if(tail.length<4) return;
+  const cur=flatPos(), lo=Math.max(0,cur-MIC.back), hi=Math.min(FLAT.length-1,cur+MIC.fwd);
+  let best={score:0,idx:-1};
+  for(let j=lo;j<=hi;j++){
+    for(let span=1;span<=MIC.span&&j-span+1>=0;span++){
+      const target=FLAT.slice(j-span+1,j+1).map(x=>x.t).join("");
+      if(target.length<2) continue;
+      const sc=simSlack(target,tail,MIC.slack);
+      if(sc>best.score) best={score:sc,idx:j};
+    }
+  }
+  if(best.idx<0) return;
+  // a bigger jump must clear a higher bar; a wrong long jump costs far more than a missed short one
+  const dist=Math.abs(best.idx-cur);
+  const need=Math.min(MIC.maxScore, MIC.baseScore+dist*MIC.perStep);
+  if(best.score>=need){
+    lostSince=0; setTracking(true);
+    if(best.idx!==cur){ const f=FLAT[best.idx]; v=f.v;p=f.p;w=f.w; render(); }
+  } else {
+    if(!lostSince) lostSince=now;
+    if(now-lostSince>MIC.lostAfter){ setTracking(false); setStatus("Can't place this — tap the word being recited"); }
+  }
+}
+
+/* keep the screen awake for the length of a recitation */
+async function acquireWake(){ try{ if("wakeLock" in navigator) wakeLock=await navigator.wakeLock.request("screen"); }catch(_){} }
+function releaseWake(){ try{ wakeLock&&wakeLock.release(); }catch(_){} wakeLock=null; }
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&listening&&!wakeLock) acquireWake(); });
+
+const MSG={"not-allowed":"Microphone blocked. Allow it in the site settings, then tap the mic again.",
+  "service-not-allowed":"Speech service not allowed on this origin — the page must be served over https.",
+  "network":"No internet. Speech recognition needs a connection.",
+  "audio-capture":"No microphone found.","no-speech":"Listening…","aborted":""};
+
+function startMic(){
+  if(startingMic||listening) return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ setStatus("Speech recognition isn't available in this browser — use Chrome on Android.",true); return; }
+  startingMic=true;
+  rec=new SR(); rec.lang=recLang; rec.continuous=true; rec.interimResults=true; rec.maxAlternatives=1;
+  let consumed=0;                                    // guard against re-reading finalised results
+  rec.onresult=e=>{
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const r=e.results[i];
+      if(r.isFinal){ if(i>=consumed){ finalText+=r[0].transcript+" "; consumed=i+1; } }
+      else interim+=r[0].transcript;
+    }
+    if(finalText.length>240){                        // trim on a word boundary, not mid-word
+      const cutAt=finalText.length-240; const sp=finalText.indexOf(" ",cutAt);
+      finalText=finalText.slice(sp>=0?sp+1:cutAt);
+    }
+    const all=finalText+interim;
+    restartDelay=250;
+    if(heard.classList.contains("err")) heard.className="heard";
+    heard.innerHTML="<span>"+all.slice(-60)+"</span>";
+    follow(all);
+  };
+  rec.onerror=e=>{
+    if(["not-allowed","service-not-allowed","audio-capture"].includes(e.error)){ stopMic(true); setStatus(MSG[e.error],true); return; }
+    if(e.error==="network"){ restartDelay=Math.min(restartDelay*2,15000); setStatus(MSG.network,true); return; }
+    if(e.error==="no-speech"||e.error==="aborted") return;   // routine; onend will restart
+    setStatus("Error: "+e.error,true);
+  };
+  rec.onend=()=>{
+    if(!listening) return;
+    setTimeout(()=>{ if(listening){ try{ rec.start(); }catch(_){} } },restartDelay);
+  };
+  try{
+    rec.start(); listening=true; stop();
+    $("micBtn").classList.add("on"); setTracking(true); lostSince=0;
+    setStatus("Listening…"); acquireWake();
+  }catch(err){ setStatus("Couldn't start the microphone. Try again.",true); }
+  startingMic=false;
+}
+function stopMic(keepMsg){
+  listening=false; setTracking(true);
+  if(rec){ rec.onend=null; rec.onresult=null; rec.onerror=null; try{ rec.abort(); }catch(_){} rec=null; }
+  $("micBtn").classList.remove("on","lost");
+  if(!keepMsg) heard.textContent="";
+  finalText=""; lostSince=0; releaseWake();
+}
+/* clearing the buffer stops stale audio dragging the highlight back after a manual jump */
+function resetHeard(){ finalText=""; lostSince=0; lastFollow=0; if(listening){ setTracking(true); setStatus("Listening…"); } }
+$("micBtn").onclick=()=>listening?stopMic():startMic();
+$("calibSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  if(b.dataset.v==="clear"){ CALIB=null; try{localStorage.removeItem("as_calib")}catch(_){} calib=false; lastTap=0; $("calibSeg").querySelector('[data-v="on"]').setAttribute("aria-pressed","false"); setStatus("Timing reset to mātrā defaults"); return; }
+  calib=!calib; lastTap=0; b.setAttribute("aria-pressed",String(calib));
+  if(calib){ stop(); if(listening) stopMic(); setStatus("Play the recording; tap Next on each word"); }
+  else { saveCalib(); heard.textContent=CALIB?`Saved timing for ${Object.keys(CALIB).length} words`:""; }
+});
+seg("langSeg",val=>{recLang=val; if(listening){ stopMic(); setTimeout(startMic,350); }});
+/* ---------- Settings sheet ---------- */
+function openSheet(){ $("sheet").classList.add("open"); }
+function closeSheet(){ $("sheet").classList.remove("open"); }
+$("settingsBtn").onclick=openSheet;
+$("sheetDone").onclick=closeSheet;
+$("sheet").addEventListener("click",e=>{ if(e.target.id==="sheet") closeSheet(); });
+
+/* ---------- Read mode ---------- */
+let reading=false, rSize=110, rUiTimer=null;
+try{const z=+localStorage.getItem("as_rsize"); if(z>=70&&z<=220) rSize=z;}catch(_){}
+function applySize(){ document.documentElement.style.setProperty("--rsize",(rSize/100*2).toFixed(3)+"rem"); $("rSize").textContent=rSize+"%"; try{localStorage.setItem("as_rsize",rSize)}catch(_){} }
+function buildReader(){
+  $("reader").innerHTML=VERSES.map((dv,i)=>{
+    const body = script==="rom" ? ROMAN[i]
+      : script==="both" ? dv.replace(/([।॥])/g,'<span class="rd">$1</span>')+`<span class="rr">${ROMAN[i]}</span>`
+      : dv.replace(/([।॥])/g,'<span class="rd">$1</span>');
+    const txt = script==="rom" ? body.replace(/([।॥])/g,'<span class="rd">$1</span>') : body;
+    return `<p class="rv"><span class="rn">॥ ${devNum(i+1)} ॥</span>${txt}</p>`;
+  }).join("");
+}
+function showReadUI(){}   /* read-mode bar stays visible: nothing to reveal */
+function setRead(on){
+  reading=on; document.body.dataset.read=on?"1":"0";
+  $("readBtn").setAttribute("aria-pressed",String(on));
+  $("all").hidden=on; $("reader").hidden=!on;
+  if(on){ stop(); if(listening) stopMic(); buildReader(); applySize(); showReadUI(); $("main").scrollTo({top:0}); }
+  else { renderedKey=""; render(); }
+}
+$("readBtn").onclick=()=>setRead(!reading);
+$("rExit").onclick=()=>setRead(false);
+$("rSmall").onclick=()=>{rSize=Math.max(70,rSize-10);applySize();showReadUI();};
+$("rBig").onclick=()=>{rSize=Math.min(220,rSize+10);applySize();showReadUI();};
+["touchstart","pointerdown","mousemove"].forEach(ev=>document.addEventListener(ev,()=>{ if(reading) showReadUI(); },{passive:true}));
+
+/* ---------- TV mode ---------- */
+let uiTimer=null;
+function showUI(){ document.body.classList.add("show-ui"); clearTimeout(uiTimer); uiTimer=setTimeout(()=>document.body.classList.remove("show-ui"),3500); }
+function setTV(on){
+  document.body.dataset.tv=on?"1":"0"; $("tvBtn").setAttribute("aria-pressed",String(on));
+  try{localStorage.setItem("as_tv",on?"1":"0")}catch(_){}
+  if(on){ showUI(); if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); }
+  else { document.body.classList.remove("show-ui"); if(document.fullscreenElement) document.exitFullscreen().catch(()=>{}); }
+  render();
+}
+$("tvBtn").onclick=()=>setTV(document.body.dataset.tv!=="1");
+["mousemove","touchstart","pointerdown"].forEach(ev=>document.addEventListener(ev,()=>{ if(document.body.dataset.tv==="1") showUI(); },{passive:true}));
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT"&&e.key!=="Escape") return;
+  const k=e.key;
+  if(k===" "){e.preventDefault(); playing?stop():play();}
+  else if(k==="ArrowRight"){step(1)} else if(k==="ArrowLeft"){step(-1)}
+  else if(k.toLowerCase()==="r"){$("resetBtn").click()}
+  else if(k.toLowerCase()==="m"){ if(document.body.dataset.mic!=="off") $("micBtn").click(); }
+  else if(k.toLowerCase()==="f"){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); }
+  else if(k.toLowerCase()==="t"){ setTV(document.body.dataset.tv!=="1"); }
+  else if(k==="Escape"&&$("sheet").classList.contains("open")){ closeSheet(); }
+  else if(k==="Escape"&&reading){ setRead(false); }
+  else if(k==="Escape"&&document.body.dataset.tv==="1"){ setTV(false); }
+  if(document.body.dataset.tv==="1") showUI();
+});
+try{ if(localStorage.getItem("as_tv")==="1"){ document.body.dataset.tv="1"; $("tvBtn").setAttribute("aria-pressed","true"); } }catch(_){}
+$("themeBtn").onclick=()=>{const cur=document.documentElement.dataset.theme==="light"?"dark":"light"; document.documentElement.dataset.theme=cur; $("themeBtn").textContent=cur==="light"?"☀":"☾"; try{localStorage.setItem("as_theme",cur)}catch(e){}};
+try{const sc=localStorage.getItem("as_script"); if(sc){script=sc; document.body.dataset.script=sc; $("scriptSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===sc)))}}catch(e){}
+try{const s=localStorage.getItem("as_style"); if(s){document.body.dataset.style=s; $("styleSeg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===s)))}
+    const t=localStorage.getItem("as_theme"); if(t){document.documentElement.dataset.theme=t; $("themeBtn").textContent=t==="light"?"☀":"☾"}}catch(e){}
+render();
+</script>
+</body>
+</html>
