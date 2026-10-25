@@ -4,48 +4,80 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>भजन व स्तोत्र संग्रह · Bhajan & Stotra Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Mukta:wght@300;400;500;600;700&display=swap">
 <style>
 :root{
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-  --bg:#16121F;
-  --bg-2:#1F1A2B;
-  --card-bg:#231C32;
-  --card-hover:#2A223D;
-  --ink:#EFE3C6;
-  --ink-dim:#8A809E;
-  --ink-done:#A99E86;
-  --kesari:#F28C28;
-  --gold:#D9A441;
-  --line:#2C2538;
-  --line-strong:#3D344E;
+  --bg:#110D1A;
+  --bg-2:#1A1426;
+  --card-bg:#221B30;
+  --card-hover:#29213A;
+  --ink:#F7EFE2;
+  --ink-dim:#A89EB8;
+  --ink-done:#7F7391;
+  --kesari:#FF8A1E;
+  --gold:#E8B34E;
+  --line:#2E253F;
+  --line-strong:#44375D;
   --sanskrit:"Tiro Devanagari Sanskrit","Noto Serif Devanagari","Mangal",serif;
   --ui:"Mukta","Noto Sans Devanagari",system-ui,sans-serif;
-  --shadow: 0 12px 30px rgba(0,0,0,0.35);
+  --shadow:0 14px 34px rgba(0,0,0,0.45);
 }
 @media (prefers-color-scheme: light){
   :root:not([data-theme="dark"]){
-    --bg:#F6EBD6;--bg-2:#EEDFC3;--card-bg:#FDF8EE;--card-hover:#FFFFFF;
-    --ink:#2A1F1A;--ink-dim:#8F806D;--ink-done:#6F624F;
-    --kesari:#C8590E;--gold:#8E6A1B;--line:#DCCBAA;--line-strong:#C7B490;
-    --shadow: 0 10px 24px rgba(60,40,20,0.08);
+    --bg:#F8F9FA;
+    --bg-2:#ECEEF2;
+    --card-bg:#FFFFFF;
+    --card-hover:#FFFFFF;
+    --ink:#18191B;
+    --ink-dim:#495057;
+    --ink-done:#555E68;
+    --kesari:#BA4A00;
+    --gold:#7A5408;
+    --line:#DEE2E6;
+    --line-strong:#CED4DA;
+    --shadow:0 8px 24px rgba(24,25,27,0.06);
   }
 }
 :root[data-theme="light"]{
-  --bg:#F6EBD6;--bg-2:#EEDFC3;--card-bg:#FDF8EE;--card-hover:#FFFFFF;
-  --ink:#2A1F1A;--ink-dim:#8F806D;--ink-done:#6F624F;
-  --kesari:#C8590E;--gold:#8E6A1B;--line:#DCCBAA;--line-strong:#C7B490;
-  --shadow: 0 10px 24px rgba(60,40,20,0.08);
+  --bg:#F8F9FA;
+  --bg-2:#ECEEF2;
+  --card-bg:#FFFFFF;
+  --card-hover:#FFFFFF;
+  --ink:#18191B;
+  --ink-dim:#495057;
+  --ink-done:#555E68;
+  --kesari:#BA4A00;
+  --gold:#7A5408;
+  --line:#DEE2E6;
+  --line-strong:#CED4DA;
+  --shadow:0 8px 24px rgba(24,25,27,0.06);
 }
 :root[data-theme="dark"]{
-  --bg:#16121F;--bg-2:#1F1A2B;--card-bg:#231C32;--card-hover:#2A223D;
-  --ink:#EFE3C6;--ink-dim:#8A809E;--ink-done:#A99E86;
-  --kesari:#F28C28;--gold:#D9A441;--line:#2C2538;--line-strong:#3D344E;
-  --shadow: 0 12px 30px rgba(0,0,0,0.35);
+  --bg:#110D1A;
+  --bg-2:#1A1426;
+  --card-bg:#221B30;
+  --card-hover:#29213A;
+  --ink:#F7EFE2;
+  --ink-dim:#A89EB8;
+  --ink-done:#7F7391;
+  --kesari:#FF8A1E;
+  --gold:#E8B34E;
+  --line:#2E253F;
+  --line-strong:#44375D;
+  --shadow:0 14px 34px rgba(0,0,0,0.45);
 }
 *{box-sizing:inherit;margin:0;padding:0}
+::selection{background:var(--kesari);color:#FFFFFF}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
 body{
   min-height:100vh;
   background:var(--bg);
@@ -54,6 +86,7 @@ body{
   display:flex;
   flex-direction:column;
   line-height:1.6;
+  transition:background 0.2s ease,color 0.2s ease;
 }
 header{
   display:flex;
@@ -72,7 +105,7 @@ header{
 }
 .brand-om{
   font-family:var(--sanskrit);
-  font-size:2rem;
+  font-size:2.2rem;
   color:var(--kesari);
   line-height:1;
 }
@@ -82,13 +115,13 @@ header{
   letter-spacing:0.02em;
 }
 .brand-sub{
-  font-size:0.8rem;
+  font-size:0.82rem;
   color:var(--ink-dim);
   display:block;
 }
 .icon-btn{
   background:none;
-  border:2px solid var(--line);
+  border:1.5px solid var(--line-strong);
   color:var(--ink);
   min-width:46px;
   height:46px;
@@ -100,7 +133,7 @@ header{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  transition:all 0.18s ease;
+  transition:border-color 0.18s ease,color 0.18s ease,background 0.18s ease;
 }
 .icon-btn:hover{
   border-color:var(--kesari);
@@ -108,80 +141,60 @@ header{
 }
 .icon-btn:focus-visible{
   outline:2px solid var(--kesari);
-  outline-offset:2px;
+  outline-offset:3px;
 }
 main{
   flex:1;
   max-width:980px;
   width:100%;
   margin:0 auto;
-  padding:36px 20px 60px;
+  padding:44px 20px 64px;
 }
 .hero{
   text-align:center;
-  margin-bottom:44px;
-}
-.hero-tag{
-  display:inline-block;
-  font-family:var(--ui);
-  font-size:0.85rem;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-  color:var(--gold);
-  border:1px solid var(--line-strong);
-  padding:4px 14px;
-  border-radius:20px;
-  margin-bottom:14px;
-  background:var(--bg-2);
+  margin-bottom:48px;
 }
 .hero-title{
   font-family:var(--sanskrit);
-  font-size:clamp(2.1rem,6vw,3.2rem);
+  font-size:clamp(2.2rem,6.5vw,3.4rem);
   font-weight:500;
   color:var(--ink);
-  margin-bottom:10px;
+  margin-bottom:12px;
   line-height:1.2;
 }
 .hero-desc{
-  font-size:1.05rem;
+  font-size:1.08rem;
   color:var(--ink-dim);
   max-width:58ch;
   margin:0 auto;
 }
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap:24px;
   margin-top:28px;
 }
 .card{
   background:var(--card-bg);
-  border:1.5px solid var(--line);
-  border-radius:20px;
-  padding:28px 24px 24px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:26px 24px;
   display:flex;
   flex-direction:column;
   text-decoration:none;
   color:inherit;
   box-shadow:var(--shadow);
-  transition:transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+  transition:transform 0.22s ease,border-color 0.22s ease,background 0.22s ease,box-shadow 0.22s ease;
   position:relative;
-  overflow:hidden;
-}
-.card::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:4px;
-  background:linear-gradient(90deg, var(--gold), var(--kesari));
-  opacity:0.85;
 }
 .card:hover{
-  transform:translateY(-4px);
-  border-color:var(--kesari);
+  transform:translateY(-3px);
+  border-color:var(--gold);
   background:var(--card-hover);
+}
+.card:focus-visible{
+  outline:2px solid var(--kesari);
+  outline-offset:3px;
 }
 .card-header{
   display:flex;
@@ -197,9 +210,10 @@ main{
   line-height:1;
 }
 .card-badge{
-  font-size:0.78rem;
-  padding:3px 10px;
-  border-radius:12px;
+  font-size:0.8rem;
+  font-weight:500;
+  padding:4px 11px;
+  border-radius:8px;
   background:var(--bg-2);
   color:var(--ink-dim);
   border:1px solid var(--line);
@@ -216,17 +230,17 @@ main{
   font-size:0.95rem;
   color:var(--gold);
   font-style:italic;
-  margin-bottom:14px;
+  margin-bottom:16px;
 }
 .card-excerpt{
   font-family:var(--sanskrit);
-  font-size:1.02rem;
-  color:var(--ink-dim);
-  line-height:1.7;
-  padding:12px 14px;
-  background:var(--bg);
-  border-radius:12px;
-  border-left:3px solid var(--kesari);
+  font-size:1.05rem;
+  color:var(--ink);
+  line-height:1.75;
+  padding:14px 16px;
+  background:var(--bg-2);
+  border-radius:10px;
+  border:1px solid var(--line);
   margin-bottom:20px;
   flex:1;
 }
@@ -237,11 +251,11 @@ main{
   margin-bottom:22px;
 }
 .pill{
-  font-size:0.75rem;
+  font-size:0.78rem;
   color:var(--ink-dim);
   background:var(--bg-2);
-  padding:3px 9px;
-  border-radius:8px;
+  padding:3px 10px;
+  border-radius:6px;
   border:1px solid var(--line);
 }
 .card-action{
@@ -263,24 +277,17 @@ main{
 footer{
   border-top:1px solid var(--line);
   background:var(--bg-2);
-  padding:20px;
+  padding:22px 20px;
   text-align:center;
-  font-size:0.9rem;
+  font-size:0.92rem;
   color:var(--ink-dim);
-}
-footer a{
-  color:var(--gold);
-  text-decoration:none;
-}
-footer a:hover{
-  text-decoration:underline;
 }
 </style>
 </head>
 <body>
 <header>
   <a href="index.html" class="brand">
-    <span class="brand-om">ॐ</span>
+    <span class="brand-om" aria-hidden="true">ॐ</span>
     <div>
       <div class="brand-title">भजन व स्तोत्र संग्रह</div>
       <span class="brand-sub">Recitation & Walkthroughs</span>
@@ -291,14 +298,13 @@ footer a:hover{
 
 <main>
   <section class="hero">
-    <div class="hero-tag">पवित्र पाठ एवं साधना</div>
     <h1 class="hero-title">भजन व स्तोत्र संग्रह</h1>
     <p class="hero-desc">Interactive recitation walkthroughs with real-time word tracking, tempo calibration, Devanagari / Roman scripts, and full-screen TV display.</p>
   </section>
 
-  <section class="grid">
+  <section class="grid" aria-label="Available Recitations">
     <!-- Card 1: Atharvashirsha -->
-    <a href="atharvashirsha.html" class="card" aria-label="Open Ganapati Atharvashirsha recitation">
+    <a href="atharvashirsha.html" class="card" aria-label="Open Ganapati Atharvashirsha recitation walkthrough">
       <div class="card-header">
         <span class="card-num">॥ १ ॥</span>
         <span class="card-badge">१० श्लोक · Upanishad</span>
@@ -316,12 +322,12 @@ footer a:hover{
       </div>
       <div class="card-action">
         <span>पाठ आरम्भ करें · Begin Recitation</span>
-        <span>→</span>
+        <span aria-hidden="true">→</span>
       </div>
     </a>
 
     <!-- Card 2: Mata Gayatri Aarti -->
-    <a href="gayatri-aarti.html" class="card" aria-label="Open Mata Gayatri Aarti recitation">
+    <a href="gayatri-aarti.html" class="card" aria-label="Open Mata Gayatri Aarti recitation walkthrough">
       <div class="card-header">
         <span class="card-num">॥ २ ॥</span>
         <span class="card-badge">११ पद · Aarti & Stuti</span>
@@ -339,7 +345,7 @@ footer a:hover{
       </div>
       <div class="card-action">
         <span>पाठ आरम्भ करें · Begin Recitation</span>
-        <span>→</span>
+        <span aria-hidden="true">→</span>
       </div>
     </a>
   </section>

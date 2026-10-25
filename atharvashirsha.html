@@ -1,40 +1,69 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="sa">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Atharvashirsha · Recitation walkthrough</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Mukta:wght@300;400;500&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Mukta:wght@300;400;500;600;700&display=swap">
 <style>
 :root{
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-  --bg:#16121F;
-  --bg-2:#1F1A2B;
-  --ink:#EFE3C6;
-  --ink-dim:#5E5670;
-  --ink-done:#A99E86;
-  --kesari:#F28C28;
-  --gold:#D9A441;
-  --line:#2C2538;
+  --bg:#110D1A;
+  --bg-2:#1A1426;
+  --ink:#F7EFE2;
+  --ink-dim:#A89EB8;
+  --ink-done:#7F7391;
+  --kesari:#FF8A1E;
+  --gold:#E8B34E;
+  --line:#2E253F;
+  --line-strong:#44375D;
   --sanskrit:"Tiro Devanagari Sanskrit","Noto Serif Devanagari","Mangal",serif;
   --ui:"Mukta","Noto Sans Devanagari",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: light){
   :root:not([data-theme="dark"]){
-    --bg:#F6EBD6;--bg-2:#EEDFC3;--ink:#2A1F1A;--ink-dim:#B9AA90;--ink-done:#6F624F;
-    --kesari:#C8590E;--gold:#8E6A1B;--line:#DCCBAA;
+    --bg:#F8F9FA;
+    --bg-2:#ECEEF2;
+    --ink:#18191B;
+    --ink-dim:#495057;
+    --ink-done:#555E68;
+    --kesari:#BA4A00;
+    --gold:#7A5408;
+    --line:#DEE2E6;
+    --line-strong:#CED4DA;
   }
 }
 :root[data-theme="light"]{
-  --bg:#F6EBD6;--bg-2:#EEDFC3;--ink:#2A1F1A;--ink-dim:#B9AA90;--ink-done:#6F624F;
-  --kesari:#C8590E;--gold:#8E6A1B;--line:#DCCBAA;
+  --bg:#F8F9FA;
+  --bg-2:#ECEEF2;
+  --ink:#18191B;
+  --ink-dim:#495057;
+  --ink-done:#555E68;
+  --kesari:#BA4A00;
+  --gold:#7A5408;
+  --line:#DEE2E6;
+  --line-strong:#CED4DA;
 }
 :root[data-theme="dark"]{
-  --bg:#16121F;--bg-2:#1F1A2B;--ink:#EFE3C6;--ink-dim:#5E5670;--ink-done:#A99E86;
-  --kesari:#F28C28;--gold:#D9A441;--line:#2C2538;
+  --bg:#110D1A;
+  --bg-2:#1A1426;
+  --ink:#F7EFE2;
+  --ink-dim:#A89EB8;
+  --ink-done:#7F7391;
+  --kesari:#FF8A1E;
+  --gold:#E8B34E;
+  --line:#2E253F;
+  --line-strong:#44375D;
 }
+::selection{background:var(--kesari);color:#FFFFFF}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--ui);display:flex;flex-direction:column;overflow:hidden}
 *{box-sizing:inherit}
@@ -62,15 +91,15 @@ body[data-script="both"] .w small{display:block;font-size:.5em;line-height:1.3;o
 body[data-script="both"] .danda{vertical-align:top;margin-top:.1em;display:inline-block}
 
 /* Style A: kesari glow + lift */
-body[data-style="glow"] .w.now{font-weight:700;transform:translateY(-.06em) scale(1.08);text-shadow:0 0 18px color-mix(in srgb,var(--kesari) 55%,transparent)}
+body[data-style="glow"] .w.now{font-weight:700;transform:translateY(-.04em);background:color-mix(in srgb,var(--kesari) 18%,transparent);border-radius:4px}
 /* Style B: gold underline bar */
 body[data-style="bar"] .w.now{color:var(--ink);font-weight:700}
 body[data-style="bar"] .w.now::after{content:"";position:absolute;left:.1em;right:.1em;bottom:.05em;height:.14em;background:var(--kesari);border-radius:2px}
 /* Style C: filled pill */
-body[data-style="pill"] .w.now{color:var(--bg);background:var(--kesari);font-weight:600}
+body[data-style="pill"] .w.now{color:#FFFFFF;background:var(--kesari);font-weight:600}
 
-.prev-next{opacity:.45;font-size:.8rem;text-align:center;margin-top:28px;color:var(--ink-done);font-family:var(--ui)}
-.ctx{font-family:var(--sanskrit);font-size:clamp(1.05rem,4vw,1.5rem);line-height:1.8;text-align:center;max-width:36ch;margin:0 auto;color:var(--ink-dim);opacity:.55;cursor:pointer}
+.prev-next{font-size:.85rem;text-align:center;margin-top:28px;color:var(--ink-dim);font-family:var(--ui)}
+.ctx{font-family:var(--sanskrit);font-size:clamp(1.05rem,4vw,1.5rem);line-height:1.8;text-align:center;max-width:36ch;margin:0 auto;color:var(--ink-dim);cursor:pointer}
 .ctx .n{display:block;font-size:.85em;color:var(--gold);opacity:.8;margin-bottom:4px}
 .ctx.prev{margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--line)}
 .ctx.next{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
@@ -100,9 +129,9 @@ footer{border-top:1px solid var(--line);background:var(--bg-2);padding:10px 18px
   color:var(--ink);font-family:var(--ui);font-size:1.1rem;cursor:pointer;white-space:nowrap}
 /* at the end of the hymn Play has nothing left to do: offer the loop where the thumb already is */
 body[data-end="1"] #playBtn,body[data-end="1"] #prevBtn,body[data-end="1"] #nextBtn{display:none}
-body[data-end="1"] #resetBtn{background:var(--kesari);border-color:var(--kesari);color:var(--bg);
+body[data-end="1"] #resetBtn{background:var(--kesari);border-color:var(--kesari);color:#FFFFFF;
   height:76px;font-size:1.35rem;font-weight:500;padding:0 34px}
-.ctrl.play{width:76px;height:76px;background:var(--kesari);border-color:var(--kesari);color:#16121F;font-size:1.8rem}
+.ctrl.play{width:76px;height:76px;background:var(--kesari);border-color:var(--kesari);color:#FFFFFF;font-size:1.8rem}
 .row{display:flex;align-items:center;gap:12px;margin-top:12px;font-size:1rem;color:var(--ink-done)}
 .row input[type=range]{height:34px}
 .row label{white-space:nowrap}
@@ -115,18 +144,18 @@ body[data-end="1"] #resetBtn{background:var(--kesari);border-color:var(--kesari)
 #sheet{position:fixed;inset:0;z-index:20;display:none;background:rgba(0,0,0,.55)}
 #sheet.open{display:block}
 #sheetPanel{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;background:var(--bg-2);
-  border-top:2px solid var(--line);border-radius:22px 22px 0 0;
+  border-top:1px solid var(--line);border-radius:22px 22px 0 0;
   padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px))}
 #sheetPanel h3{margin:0 0 18px;font-family:var(--ui);font-size:1.35rem;font-weight:500;color:var(--ink)}
 .field{margin-bottom:22px}
 .field > span{display:block;font-size:1.05rem;color:var(--ink-done);margin-bottom:9px}
 .field .seg{width:100%}
 .field .seg button{flex:1;padding:14px 8px}
-#sheetDone{width:100%;height:60px;border:0;border-radius:14px;background:var(--kesari);color:var(--bg);
+#sheetDone{width:100%;height:60px;border:0;border-radius:14px;background:var(--kesari);color:#FFFFFF;
   font-family:var(--ui);font-size:1.25rem;font-weight:500;cursor:pointer;margin-top:4px}
 #settingsBtn{margin-top:12px;width:100%;height:52px;background:none;border:2px solid var(--line);
   border-radius:14px;color:var(--ink-done);font-family:var(--ui);font-size:1.05rem;cursor:pointer}
-@media (prefers-reduced-motion: reduce){.w{transition:none}body[data-style="glow"] .w.now{transform:none}}
+@media (prefers-reduced-motion: reduce){.w{transition:none}body[data-style="glow"] .w.now{font-weight:700;transform:translateY(-.04em);background:color-mix(in srgb,var(--kesari) 18%,transparent);border-radius:4px}}
 
 /* ---------- Read mode: plain continuous text ---------- */
 body[data-read="1"] header,body[data-read="1"] footer,body[data-read="1"] .prev-next{display:none}
@@ -137,10 +166,10 @@ body[data-read="1"] main{padding:4vh 6vw 20vh;scroll-behavior:smooth}
 #reader .rd{color:var(--ink-dim);margin:0 .12em}
 #reader .rr{display:block;font-size:.62em;line-height:1.75;color:var(--ink-done);opacity:.85;margin-top:.5em}
 #readbar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;gap:14px;
-  padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:var(--bg-2);border-top:2px solid var(--line);z-index:5}
+  padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:var(--bg-2);border-top:1px solid var(--line);z-index:5}
 #readbar button{background:none;border:2px solid var(--line);color:var(--ink);border-radius:14px;
   min-width:72px;height:60px;padding:0 18px;font-size:1.3rem;font-weight:500;cursor:pointer;font-family:var(--ui)}
-#readbar #rExit{background:var(--kesari);border-color:var(--kesari);color:var(--bg);min-width:108px}
+#readbar #rExit{background:var(--kesari);border-color:var(--kesari);color:#FFFFFF;border-color:var(--kesari);min-width:108px}
 #readbar .sz{font-variant-numeric:tabular-nums;color:var(--ink-done);font-size:1.05rem;min-width:3.6em;text-align:center}
 body[data-read="1"] #readbar{display:flex}
 #readbar{display:none}
@@ -157,7 +186,7 @@ body[data-tv="1"][data-script="both"] .text{line-height:1.2}
 body[data-tv="1"] .ctx{font-size:clamp(1.3rem,3.4vh,2.6rem);max-width:80vw;opacity:.42}
 body[data-tv="1"] .verse{padding:3vh 0}
 body[data-tv="1"] .w{padding:0 .1em}
-body[data-tv="1"][data-style="glow"] .w.now{text-shadow:0 0 .35em color-mix(in srgb,var(--kesari) 65%,transparent),0 0 1em color-mix(in srgb,var(--kesari) 30%,transparent)}
+body[data-tv="1"][data-style="glow"] .w.now{background:color-mix(in srgb,var(--kesari) 22%,transparent);border-radius:6px}
 body[data-tv="1"] .w.done{color:color-mix(in srgb,var(--ink) 70%,var(--ink-done))}
 body[data-tv="1"] .w{color:color-mix(in srgb,var(--ink-dim) 75%,var(--ink))}
 body[data-tv="1"] .prev-next{display:none}
@@ -170,7 +199,7 @@ body[data-tv="1"] .ctrl{width:8vh;height:8vh;font-size:3vh}
 body[data-tv="1"] .ctrl.play{width:10vh;height:10vh;font-size:4vh}
 body[data-tv="1"] .heard{font-size:2.6vh}
 body[data-tv="1"] .seg,body[data-tv="1"] .row{font-size:1.9vh}
-.kbd{opacity:.5;font-size:.75rem;text-align:center;margin-top:8px;font-family:var(--ui);display:none}
+.kbd{font-size:.78rem;color:var(--ink-done);text-align:center;margin-top:8px;font-family:var(--ui);display:none}
 body[data-tv="1"] .kbd{display:block}
 </style>
 </head>
