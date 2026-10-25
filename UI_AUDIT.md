@@ -1,6 +1,6 @@
-# UI & Technical Audit Report
+﻿# UI & Technical Audit Report
 
-Comprehensive technical quality, accessibility, performance, and cultural domain integrity audit for the Bhajan Jam / Atharvashirsha web application.
+Comprehensive technical quality, accessibility, performance, and cultural domain integrity audit for the Bhajam / Atharvashirsha web application.
 
 ---
 

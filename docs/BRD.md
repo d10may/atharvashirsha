@@ -1,9 +1,9 @@
-# Business Requirements Document (BRD)
+﻿# Business Requirements Document (BRD)
 ## Atharvashirsha Recitation Walkthrough & Reading Companion
 
 *Document Version:* 1.0.0 (Retrospective)  
 *Framework:* IIBA BABOK Guide v3  
-*Domain:* Vedic Chanting & Devotional Software (Bhajanjam)  
+*Domain:* Vedic Chanting & Devotional Software (Bhajam)  
 *Status:* Approved / Baselines Implemented  
 
 ---
