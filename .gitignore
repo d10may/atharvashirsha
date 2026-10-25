@@ -1,0 +1,15 @@
+# Agent skills and customizations (local development only)
+.agents/
+.agent/
+_agents/
+_agent/
+
+# External cloned template library
+claude-code-templates/
+
+# OS / Editor temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+skills-lock.json
