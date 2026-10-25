@@ -12,67 +12,71 @@
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-  --bg:#110D1A;
-  --bg-2:#1A1426;
-  --card-bg:#221B30;
-  --card-hover:#29213A;
-  --ink:#F7EFE2;
-  --ink-dim:#A89EB8;
-  --ink-done:#7F7391;
-  --kesari:#FF8A1E;
-  --gold:#E8B34E;
-  --line:#2E253F;
-  --line-strong:#44375D;
+  --bg:#16121F;
+  --bg-2:#1F1A2B;
+  --card-bg:#231C32;
+  --card-hover:#2A223D;
+  --ink:#FBF2DF;
+  --ink-dim:#9E93B3;
+  --ink-done:#B8AC94;
+  --kesari:#F28C28;
+  --gold:#D9A441;
+  --line:#2C2538;
+  --line-strong:#3D344E;
+  --ink-on-kesari:#16121F;
   --sanskrit:"Tiro Devanagari Sanskrit","Noto Serif Devanagari","Mangal",serif;
   --ui:"Mukta","Noto Sans Devanagari",system-ui,sans-serif;
-  --shadow:0 14px 34px rgba(0,0,0,0.45);
+  --shadow:0 12px 30px rgba(0,0,0,0.45);
 }
 @media (prefers-color-scheme: light){
   :root:not([data-theme="dark"]){
-    --bg:#F8F9FA;
-    --bg-2:#ECEEF2;
-    --card-bg:#FFFFFF;
-    --card-hover:#FFFFFF;
-    --ink:#18191B;
-    --ink-dim:#495057;
-    --ink-done:#555E68;
-    --kesari:#BA4A00;
-    --gold:#7A5408;
-    --line:#DEE2E6;
-    --line-strong:#CED4DA;
-    --shadow:0 8px 24px rgba(24,25,27,0.06);
+    --bg:#F6EBD6;
+    --bg-2:#EEDFC3;
+    --card-bg:#FDF8EE;
+    --card-hover:#FFFDF7;
+    --ink:#1F140E;
+    --ink-dim:#594532;
+    --ink-done:#6B5640;
+    --kesari:#C8590E;
+    --gold:#8E6A1B;
+    --line:#DCCBAA;
+    --line-strong:#C7B490;
+    --ink-on-kesari:#FFFFFF;
+    --shadow:0 10px 24px rgba(60,40,20,0.10);
   }
 }
 :root[data-theme="light"]{
-  --bg:#F8F9FA;
-  --bg-2:#ECEEF2;
-  --card-bg:#FFFFFF;
-  --card-hover:#FFFFFF;
-  --ink:#18191B;
-  --ink-dim:#495057;
-  --ink-done:#555E68;
-  --kesari:#BA4A00;
-  --gold:#7A5408;
-  --line:#DEE2E6;
-  --line-strong:#CED4DA;
-  --shadow:0 8px 24px rgba(24,25,27,0.06);
+  --bg:#F6EBD6;
+  --bg-2:#EEDFC3;
+  --card-bg:#FDF8EE;
+  --card-hover:#FFFDF7;
+  --ink:#1F140E;
+  --ink-dim:#594532;
+  --ink-done:#6B5640;
+  --kesari:#C8590E;
+  --gold:#8E6A1B;
+  --line:#DCCBAA;
+  --line-strong:#C7B490;
+  --ink-on-kesari:#FFFFFF;
+  --shadow:0 10px 24px rgba(60,40,20,0.10);
 }
 :root[data-theme="dark"]{
-  --bg:#110D1A;
-  --bg-2:#1A1426;
-  --card-bg:#221B30;
-  --card-hover:#29213A;
-  --ink:#F7EFE2;
-  --ink-dim:#A89EB8;
-  --ink-done:#7F7391;
-  --kesari:#FF8A1E;
-  --gold:#E8B34E;
-  --line:#2E253F;
-  --line-strong:#44375D;
-  --shadow:0 14px 34px rgba(0,0,0,0.45);
+  --bg:#16121F;
+  --bg-2:#1F1A2B;
+  --card-bg:#231C32;
+  --card-hover:#2A223D;
+  --ink:#FBF2DF;
+  --ink-dim:#9E93B3;
+  --ink-done:#B8AC94;
+  --kesari:#F28C28;
+  --gold:#D9A441;
+  --line:#2C2538;
+  --line-strong:#3D344E;
+  --ink-on-kesari:#16121F;
+  --shadow:0 12px 30px rgba(0,0,0,0.45);
 }
 *{box-sizing:inherit;margin:0;padding:0}
-::selection{background:var(--kesari);color:#FFFFFF}
+::selection{background:var(--kesari);color:var(--ink-on-kesari)}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px}
@@ -148,11 +152,24 @@ main{
   max-width:980px;
   width:100%;
   margin:0 auto;
-  padding:44px 20px 64px;
+  padding:40px 20px 64px;
 }
 .hero{
   text-align:center;
-  margin-bottom:48px;
+  margin-bottom:44px;
+}
+.hero-tag{
+  display:inline-block;
+  font-family:var(--ui);
+  font-size:0.85rem;
+  letter-spacing:0.08em;
+  font-weight:600;
+  color:var(--kesari);
+  background:color-mix(in srgb,var(--kesari) 12%,transparent);
+  border:1.5px solid color-mix(in srgb,var(--kesari) 40%,transparent);
+  padding:4px 16px;
+  border-radius:20px;
+  margin-bottom:14px;
 }
 .hero-title{
   font-family:var(--sanskrit);
@@ -176,8 +193,8 @@ main{
 }
 .card{
   background:var(--card-bg);
-  border:1px solid var(--line);
-  border-radius:16px;
+  border:1.5px solid var(--line);
+  border-radius:18px;
   padding:26px 24px;
   display:flex;
   flex-direction:column;
@@ -186,11 +203,23 @@ main{
   box-shadow:var(--shadow);
   transition:transform 0.22s ease,border-color 0.22s ease,background 0.22s ease,box-shadow 0.22s ease;
   position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:4px;
+  background:linear-gradient(90deg, var(--gold), var(--kesari));
+  opacity:0.95;
 }
 .card:hover{
-  transform:translateY(-3px);
-  border-color:var(--gold);
+  transform:translateY(-4px);
+  border-color:var(--kesari);
   background:var(--card-hover);
+  box-shadow:0 16px 36px rgba(60,40,20,0.16);
 }
 .card:focus-visible{
   outline:2px solid var(--kesari);
@@ -211,12 +240,12 @@ main{
 }
 .card-badge{
   font-size:0.8rem;
-  font-weight:500;
-  padding:4px 11px;
-  border-radius:8px;
+  font-weight:600;
+  padding:4px 12px;
+  border-radius:12px;
   background:var(--bg-2);
   color:var(--ink-dim);
-  border:1px solid var(--line);
+  border:1px solid var(--line-strong);
   white-space:nowrap;
 }
 .card-title{
@@ -238,9 +267,10 @@ main{
   color:var(--ink);
   line-height:1.75;
   padding:14px 16px;
-  background:var(--bg-2);
-  border-radius:10px;
+  background:color-mix(in srgb, var(--bg) 65%, var(--card-bg));
+  border-radius:12px;
   border:1px solid var(--line);
+  border-left:3.5px solid var(--kesari);
   margin-bottom:20px;
   flex:1;
 }
@@ -252,10 +282,11 @@ main{
 }
 .pill{
   font-size:0.78rem;
+  font-weight:500;
   color:var(--ink-dim);
   background:var(--bg-2);
-  padding:3px 10px;
-  border-radius:6px;
+  padding:4px 11px;
+  border-radius:8px;
   border:1px solid var(--line);
 }
 .card-action{
@@ -298,6 +329,7 @@ footer{
 
 <main>
   <section class="hero">
+    <div class="hero-tag">पवित्र पाठ एवं साधना</div>
     <h1 class="hero-title">भजन व स्तोत्र संग्रह</h1>
     <p class="hero-desc">Interactive recitation walkthroughs with real-time word tracking, tempo calibration, Devanagari / Roman scripts, and full-screen TV display.</p>
   </section>
